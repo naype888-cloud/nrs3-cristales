@@ -1,0 +1,13 @@
+name = "NRS3Cristales"
+defaultTargets = ["NRS3Cristales"]
+
+[leanOptions]
+autoImplicit = false
+
+[[require]]
+name = "Physlib"
+git = "https://github.com/naype888-cloud/physlib.git"
+rev = "e5d2ec45dc1566631143c6463bb0aef01c19b8b2"
+
+[[lean_lib]]
+name = "NRS3Cristales"
