@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NRS³ · Cristales — la simetría da la forma, el espectro da el tamaño</title>
+<meta name="description" content="Elige una red de Bravais, cambia a, b, c y el momento k: la inversión y la inversión temporal anulan Σ_HX, y lo que sobrevive en Ω_HX es la velocidad de grupo de la banda. Todo citado con sus lemas de Lean.">
+<style>
+  :root {
+    --bg: #f4f3ef; --panel: #ffffff; --ink: #0b0b0b; --ink2: #3b3a37; --muted: #67665f;
+    --grid: #c9c7c0; --blue: #1f63b8; --orange: #eb6834; --green: #2f8f5b; --red: #d0343a; --violet: #7c5cd6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f0f0e; --panel: #171716; --ink: #f2f1ee; --ink2: #c4c3bf; --muted: #8a8985;
+      --grid: #2a2927; --blue: #5b9be6; --orange: #f08a5d; --green: #4fb37d; --red: #f0605f; --violet: #a48bf0;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f0f0e; --panel: #171716; --ink: #f2f1ee; --ink2: #c4c3bf; --muted: #8a8985;
+    --grid: #2a2927; --blue: #5b9be6; --orange: #f08a5d; --green: #4fb37d; --red: #f0605f; --violet: #a48bf0;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 22px 16px 40px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; font-weight: 650; }
+  h3 { font-size: 1rem; margin: 22px 0 6px; }
+  .lead { color: var(--ink2); margin: 0 0 14px; max-width: 860px; }
+  .theme { float: right; font: inherit; font-size: 0.8rem; padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--grid); background: var(--panel); color: var(--ink); cursor: pointer; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: 10px 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  button.chip, button.act {
+    font: inherit; font-size: 0.86rem; padding: 5px 11px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--grid); background: var(--panel); color: var(--ink);
+  }
+  button.chip[disabled] { opacity: .45; cursor: not-allowed; text-decoration: line-through; }
+  button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .fam { color: var(--muted); font-size: .78rem; margin-right: 2px; align-self: center; }
+  .sliders { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 8px 16px; }
+  @media (max-width: 760px) { .sliders { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .sliders { grid-template-columns: 1fr; } }
+  .sl { display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+  .sl input { flex: 1; min-width: 0; accent-color: var(--blue); }
+  .sl b { min-width: 3em; text-align: right; }
+  .sl.off { opacity: .45; }
+  .alert { border: 1.5px solid var(--orange); color: var(--orange); border-radius: 10px; padding: 8px 12px;
+    margin: 6px 0 4px; font-size: .9rem; background: color-mix(in srgb, var(--orange) 8%, transparent); }
+  .alert[hidden] { display: none; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 1px solid var(--grid); border-radius: 12px; padding: 10px;
+    position: relative; }
+  .card h2 { font-size: 0.95rem; margin: 2px 4px 4px; font-weight: 600; color: var(--ink2); }
+  .card .hint { position: absolute; right: 12px; top: 10px; font-size: 0.75rem; color: var(--muted); }
+  @media (max-width: 640px) { .card .hint { position: static; display: block; margin: 0 4px 4px; } }
+  .card .sub { color: var(--ink2); font-size: .86rem; margin: 0 4px 6px; }
+  canvas { width: 100%; aspect-ratio: 1 / 1; display: block; touch-action: none; }
+  #red { cursor: grab; } #red:active { cursor: grabbing; }
+  #mats { aspect-ratio: 2 / 1.08; }
+  #banda { aspect-ratio: 16 / 6; }
+  @media (max-width: 640px) { #banda { aspect-ratio: 4 / 3; } }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .badge { border: 1px solid var(--grid); background: var(--panel); border-radius: 10px;
+    padding: 6px 10px; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+  .badge .k { color: var(--muted); font-size: 0.75rem; display: block; }
+  .badge.ok { border-color: var(--green); }
+  .badge.no { border-color: var(--red); }
+  .pairs { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  @media (max-width: 820px) { .pairs { grid-template-columns: 1fr; } }
+  .pair .row { display: flex; justify-content: space-between; gap: 8px; font-variant-numeric: tabular-nums;
+    border-bottom: 1px solid var(--grid); padding: 4px 4px; font-size: .9rem; }
+  .bars { margin: 8px 4px 2px; }
+  .barrow { display: grid; grid-template-columns: 9.5em 1fr; gap: 8px; align-items: center; font-size: .82rem; margin: 3px 0; }
+  .bartrack { height: 12px; background: color-mix(in srgb, var(--grid) 45%, transparent); border-radius: 6px; overflow: hidden; }
+  .barfill { height: 100%; border-radius: 6px; }
+  table { border-collapse: collapse; width: 100%; margin-top: 8px; font-size: 0.88rem; }
+  th, td { padding: 6px 8px; border-bottom: 1px solid var(--grid); text-align: left; vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; font-size: 0.8rem; }
+  .tablewrap { overflow-x: auto; }
+  .note { color: var(--ink2); font-size: 0.88rem; margin-top: 14px; max-width: 900px; }
+  code { font-size: 0.86em; }
+  a { color: var(--blue); }
+  .tag { display: inline-block; font-size: .72rem; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--grid); color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <button class="theme" id="theme" type="button" aria-label="Cambiar tema">Tema</button>
+  <a class="theme" style="margin-right:8px;text-decoration:none" href="https://naype888-cloud.github.io/nava-robertson-schrodinger/">◂ NRS³</a>
+  <h1>NRS³ · Cristales — la simetría da la forma, el espectro da el tamaño</h1>
+  <p class="lead">Una red de Bravais tiene un sitio por celda, y toda red así es simétrica bajo la
+    inversión <code>n ↦ −n</code>. Junto con la inversión temporal, eso obliga a que la energía
+    <code>H</code> y la posición <code>X</code> no estén correlacionadas en toda onda plana:
+    <code>Σ<sub>HX</sub> = 0</code> en todas las direcciones. La entrada que sobrevive,
+    <code>Ω<sub>HX</sub> = ⟨⁅H, X⁆⟩</code>, la fija el espectro: en cajas grandes tiende a
+    <code>−½</code> por la velocidad de grupo de la banda. Elige una red, cambia sus longitudes y el
+    momento, o rompe la simetría con un estado aleatorio y mira cómo reaparece la covarianza.
+    Arrastra la red para girarla. Cada cifra cita su lema de Lean.</p>
+
+  <div class="bar">
+    <div class="chips" id="lats" role="group" aria-label="Redes"></div>
+  </div>
+  <div class="bar">
+    <div class="chips" role="group" aria-label="Estado">
+      <button class="chip" type="button" id="onda" aria-pressed="true">onda plana (simétrica)</button>
+      <button class="chip" type="button" id="alea" aria-pressed="false">estado aleatorio (sin simetría)</button>
+    </div>
+    <button class="act" type="button" id="random">🎲 Aleatorio</button>
+    <button class="act" type="button" id="tour" aria-pressed="false">✦ Recorrido</button>
+  </div>
+  <div class="sliders">
+    <label class="sl" id="la">a<input type="range" id="a" min="0.5" max="8" step="0.05"><b id="va"></b></label>
+    <label class="sl" id="lb">b<input type="range" id="b" min="0.5" max="8" step="0.05"><b id="vb"></b></label>
+    <label class="sl" id="lc">c<input type="range" id="c" min="0.5" max="8" step="0.05"><b id="vc"></b></label>
+    <label class="sl">región L<input type="range" id="L" min="1" max="7" step="1" value="4"><b id="vL"></b></label>
+    <label class="sl">k<sub>x</sub>/π<input type="range" id="kx" min="-1" max="1" step="0.01" value="0.37"><b id="vkx"></b></label>
+    <label class="sl">k<sub>y</sub>/π<input type="range" id="ky" min="-1" max="1" step="0.01" value="0.21"><b id="vky"></b></label>
+    <label class="sl">k<sub>z</sub>/π<input type="range" id="kz" min="-1" max="1" step="0.01" value="0.13"><b id="vkz"></b></label>
+    <label class="sl">t<input type="range" id="t" min="0.2" max="2" step="0.05" value="1"><b id="vt"></b></label>
+  </div>
+  <div class="alert" id="alert" role="status" hidden></div>
+
+  <div class="badges" id="badges"></div>
+
+  <div class="grid">
+    <div class="card"><h2>La red y el estado</h2><span class="hint">tamaño |ψ|² · color = fase</span>
+      <canvas id="red" aria-label="La red en 3D, con los enlaces del sitio central y el estado en cada sitio"></canvas>
+      <p class="sub">Los enlaces naranjas son los vecinos del sitio central, los mismos del grafo de Lean.
+        La flecha violeta es la velocidad de grupo <code>v</code>; la verde punteada, <code>−2 (Ω<sub>HX</sub>, Ω<sub>HY</sub>, Ω<sub>HZ</sub>)</code>, a la misma escala: al crecer la región se encima con la violeta.</p></div>
+    <div class="card"><h2>Σ y Ω de (H, X, Y, Z)</h2><span class="hint">verde = cero forzado por un lema</span>
+      <canvas id="mats" aria-label="Las matrices de covarianza y de corchetes de H, X, Y, Z"></canvas>
+      <p class="sub">Robertson 1934: <code>|det Ω| ≤ det Σ</code> (<code>robertson_det</code>), en todo estado.
+        Los pares <code>(X, Y)</code> conmutan: su <code>Ω</code> es cero siempre y solo queda la positividad de la Gram.</p></div>
+  </div>
+
+  <div class="pairs">
+    <div class="card pair"><h2>Par que no conmuta: (H, X)</h2><div id="pairHX"></div></div>
+    <div class="card pair"><h2>Par que conmuta: (X, Y)</h2><div id="pairXY"></div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h2>La banda y el tamaño de lo que sobrevive</h2>
+    <span class="hint">banda en la dirección de k</span>
+    <canvas id="banda" aria-label="La banda a lo largo de la dirección de k y su pendiente"></canvas>
+    <p class="sub">La banda es <code>ε(k) = −t Σ<sub>δ</sub> cos(k·δ)</code> (<code>band</code>), sumando sobre los
+      vectores de enlace. Su pendiente es la velocidad de grupo (<code>hasDerivAt_band</code>). En la región finita,
+      <code>Ω<sub>HX</sub></code> es exactamente una suma sobre los enlaces internos
+      (<code>expectation_bracket_unitPlaneWave</code>). Al crecer la caja tiende a <code>−½ v</code>
+      (<code>tendsto_expectation_bracket_box</code>); mueve <i>región L</i> y míralo acercarse.</p>
+  </div>
+
+  <h3>Lo que está probado en Lean</h3>
+  <p class="note" style="margin-top:0">Todo está en la rama <a href="https://github.com/naype888-cloud/physlib/tree/mosaic-cristales">mosaic-cristales</a>
+    del fork de Physlib y se repite, con su enunciado, en <code>NRS3Cristales/Resumen.lean</code>. Solo usa los
+    axiomas <code>propext</code>, <code>Classical.choice</code> y <code>Quot.sound</code>.</p>
+  <div class="tablewrap"><table id="ledger">
+    <thead><tr><th>Qué dice</th><th>Lema</th><th>Archivo</th></tr></thead><tbody></tbody></table></div>
+
+  <p class="note"><span class="tag">modelo numérico</span> Las cifras de los paneles se calculan en el
+    navegador sobre la región <code>{−L, …, L}³</code> en coordenadas de red, con salto real
+    <code>−t</code> en cada enlace del grafo. Que <code>Σ<sub>HX</sub></code> salga cero en la onda plana y que
+    <code>Ω<sub>HX</sub></code> coincida con la fórmula exacta no es una aproximación: son los lemas. El límite
+    <code>−½ v</code> se alcanza solo cuando la caja crece. En una caja finita, el valor óptimo exacto es el
+    espectro finito, que para cajas producto de caminos es el <code>cos(π/(N+1))</code> de la cadena; en
+    FCC o BCC no tiene fórmula cerrada. Faltan en Lean la romboédrica, las dos monoclínicas y la triclínica.</p>
+</main>
+<script src="cristales-core.js"></script>
+<script src="cristales-ui.js"></script>
+</body>
+</html>
