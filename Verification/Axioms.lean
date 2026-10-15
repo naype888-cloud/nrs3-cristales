@@ -31,3 +31,8 @@ open CondensedMatter Crystal ProbabilisticTheory
 #print axioms expectation_bracket_hopping_position_littleGroup
 #print axioms covariance_position_position_littleGroup
 #print axioms expectation_bracket_hopping_position_of_neg
+#print axioms UnitalPositiveLinearMap.covariance_eq_of_symm
+#print axioms UnitalPositiveLinearMap.expectation_bracket_eq_of_symm
+#print axioms expectation_bracket_hopping_position_comp_littleGroup
+#print axioms covariance_position_comp_littleGroup
+#print axioms NRS3Cristales.omega_diagonal

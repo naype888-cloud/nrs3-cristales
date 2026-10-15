@@ -250,6 +250,7 @@ $("tour").onclick = () => {
     ["En cajas grandes, Ω_HX → −½ v (Følner)", "tendsto_expectation_bracket_box", "CondensedMatter/Crystal/GroupVelocity.lean"],
     ["Grupo pequeño de k: si fija k e invierte r, Σ_HX = Ω_HX = 0 en la onda plana (la velocidad de grupo a lo largo de r se anula)", "covariance_/expectation_bracket_hopping_position_littleGroup", "CondensedMatter/Crystal/LittleGroup.lean"],
     ["En Γ y en las esquinas de la zona (χ(−n) = χ(n)) la inversión está en el grupo pequeño: Ω_HX = 0 en toda dirección", "expectation_bracket_hopping_position_of_neg", "CondensedMatter/Crystal/LittleGroup.lean"],
+    ["El grupo pequeño fija Ω_HX como función de la dirección: la velocidad de grupo está en su subespacio fijo", "expectation_bracket_hopping_position_comp_littleGroup", "CondensedMatter/Crystal/LittleGroup.lean"],
     ["Estado simétrico ⇒ Σ_AB = Ω_AB = 0 (par/impar); con inversión temporal, Σ entre paridades, Ω dentro de una", "covariance_eq_zero_of_symm, …_of_reverse", "ProbabilisticTheory/CStarAlgebra/SymmetricState.lean"],
     ["Antiunitario f con f∘f = id: estado fijo ⇒ par e impar sin correlación", "covariance_ofVec_eq_zero_of_antiunitary", "ProbabilisticTheory/HilbertSpace/State/Antiunitary.lean"],
     ["Robertson 1934 para los estados de cristal (sin norma): |det Ω| ≤ det Σ", "AlgState.robertson_det, AlgState.robertson_schrodinger", "ProbabilisticTheory/StarAlgebra/StateUncertainty.lean"],

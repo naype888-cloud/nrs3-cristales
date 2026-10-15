@@ -40,6 +40,8 @@ Faltan la romboédrica, las dos monoclínicas y la triclínica.
 | cadena: `cov(H, X) = 0` en el estado de corriente máxima, por la simetría partícula–hueco | `covariance_maxCurrentState` |
 | grupo pequeño de `k`: una operación que fija `k` e invierte `r` da `Σ_HX = Ω_HX = 0` en la onda plana; la velocidad de grupo a lo largo de `r` se anula | `covariance_hopping_position_littleGroup`, `expectation_bracket_hopping_position_littleGroup` |
 | en `Γ` y en las esquinas de la zona (`χ(−n) = χ(n)`) la inversión está en el grupo pequeño: `Ω_HX = 0` en toda dirección | `expectation_bracket_hopping_position_of_neg` |
+| el grupo pequeño fija `Ω_HX` como función de la dirección, `Ω_{H, X_{r∘A⁻¹}} = Ω_{H, X_r}`, y la `Σ` de las posiciones: la velocidad de grupo está en el subespacio fijo | `expectation_bracket_hopping_position_comp_littleGroup`, `covariance_position_comp_littleGroup` |
+| red cuadrada, momento en la diagonal: `Ω_{H,X} = Ω_{H,Y}` en el cuadrado `{0, …, N}²` | `NRS3Cristales.omega_diagonal` (este repo, `Diagonal.lean`) |
 
 ### El tamaño: lo que sobrevive lo fija el espectro
 
@@ -69,7 +71,7 @@ lake build
 lake env lean Verification/Axioms.lean
 ```
 
-`lakefile.toml` fija Physlib en el commit `02aa2ac6` de
+`lakefile.toml` fija Physlib en el commit `6aa4163f` de
 [`naype888-cloud/physlib`](https://github.com/naype888-cloud/physlib/tree/mosaic-cristales).
 Solo se esperan los axiomas `propext`, `Classical.choice` y `Quot.sound`.
 
