@@ -38,6 +38,8 @@ Faltan la romboédrica, las dos monoclínicas y la triclínica.
 | inversión por inversión temporal: `f H f = H`, `f X f = −X` | `inversionReversal_hopping`, `inversionReversal_position` |
 | en toda onda plana, `Σ_HX = 0` en todas las direcciones | `covariance_hopping_position_unitPlaneWave` |
 | cadena: `cov(H, X) = 0` en el estado de corriente máxima, por la simetría partícula–hueco | `covariance_maxCurrentState` |
+| grupo pequeño de `k`: una operación que fija `k` e invierte `r` da `Σ_HX = Ω_HX = 0` en la onda plana; la velocidad de grupo a lo largo de `r` se anula | `covariance_hopping_position_littleGroup`, `expectation_bracket_hopping_position_littleGroup` |
+| en `Γ` y en las esquinas de la zona (`χ(−n) = χ(n)`) la inversión está en el grupo pequeño: `Ω_HX = 0` en toda dirección | `expectation_bracket_hopping_position_of_neg` |
 
 ### El tamaño: lo que sobrevive lo fija el espectro
 
@@ -67,7 +69,7 @@ lake build
 lake env lean Verification/Axioms.lean
 ```
 
-`lakefile.toml` fija Physlib en el commit `e5d2ec45` de
+`lakefile.toml` fija Physlib en el commit `02aa2ac6` de
 [`naype888-cloud/physlib`](https://github.com/naype888-cloud/physlib/tree/mosaic-cristales).
 Solo se esperan los axiomas `propext`, `Classical.choice` y `Quot.sound`.
 

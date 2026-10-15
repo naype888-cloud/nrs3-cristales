@@ -26,3 +26,8 @@ open CondensedMatter Crystal ProbabilisticTheory
 #print axioms covariance_translationInvariantState_eq_zero
 #print axioms UnitalPositiveLinearMap.covariance_ofVec_eq_zero_of_antiunitary
 #print axioms TightBindingChain.covariance_maxCurrentState
+#print axioms pointUnitary_characterWave
+#print axioms covariance_hopping_position_littleGroup
+#print axioms expectation_bracket_hopping_position_littleGroup
+#print axioms covariance_position_position_littleGroup
+#print axioms expectation_bracket_hopping_position_of_neg

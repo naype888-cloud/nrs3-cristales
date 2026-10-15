@@ -10,6 +10,7 @@ import PhyslibAlpha.CondensedMatter.Crystal.PointGroup.Orthorhombic
 import PhyslibAlpha.CondensedMatter.Crystal.Inversion
 import PhyslibAlpha.CondensedMatter.Crystal.GroupVelocity
 import PhyslibAlpha.CondensedMatter.Crystal.InvariantStateUncertainty
+import PhyslibAlpha.CondensedMatter.Crystal.LittleGroup
 import PhyslibAlpha.CondensedMatter.TightBindingChain.MaxCurrentState.UncertaintyRatio
 
 /-!
@@ -86,5 +87,34 @@ example (T : TightBindingChain) :
     UnitalPositiveLinearMap.covariance T.maxCurrentVectorState T.openHamiltonianObservable
       T.positionObservable = 0 :=
   T.covariance_maxCurrentState
+
+/-! ## 6. El grupo pequeño de cada momento: qué entradas de `Σ` y `Ω` se anulan en cada `k` -/
+
+/-- Si `s` está en el grupo pequeño de `χ`, fija la región e invierte la dirección `r`, entonces
+en la onda plana de momento `χ` la energía y la posición a lo largo de `r` no se correlacionan. -/
+example {G : Type*} [AddCommGroup G] [DecidableEq G] [TopologicalSpace G] [DiscreteTopology G]
+    {g : PeriodicGraph (Crystal.ofUnitCell G Unit)} {s : g.symmetries} {χ : BrillouinZone G}
+    (hs : s ∈ g.littleGroup χ) {Λ : Finset G}
+    (hΛ : ∀ n, (s : CellSymmetry G Unit).linear n ∈ Λ ↔ n ∈ Λ) (hne : Λ.Nonempty) (t : ℝ)
+    {r : G →+ ℝ} (hr : ∀ n, r ((s : CellSymmetry G Unit).linear n) = -r n) :
+    UnitalPositiveLinearMap.covariance
+        (UnitalPositiveLinearMap.ofVec (norm_unitCharacterWave hne χ))
+        (hoppingObservable g t) (positionObservable r) = 0 ∧
+      UnitalPositiveLinearMap.expectation
+        (UnitalPositiveLinearMap.ofVec (norm_unitCharacterWave hne χ))
+        ⁅hoppingObservable (Λ := Λ) g t, positionObservable r⁆ = 0 :=
+  ⟨covariance_hopping_position_littleGroup hs hΛ hne t hr,
+    expectation_bracket_hopping_position_littleGroup hs hΛ hne t hr⟩
+
+/-- En los momentos con `χ(-n) = χ(n)` (el centro y las esquinas de la zona) la inversión está en
+el grupo pequeño, así que `Ω_HX = 0` en todas las direcciones. -/
+example {G : Type*} [AddCommGroup G] [DecidableEq G] [TopologicalSpace G] [DiscreteTopology G]
+    (g : PeriodicGraph (Crystal.ofUnitCell G Unit)) {χ : BrillouinZone G}
+    (hχ : ∀ n, χ (Multiplicative.ofAdd (-n)) = χ (Multiplicative.ofAdd n)) {Λ : Finset G}
+    (hΛ : ∀ n, -n ∈ Λ ↔ n ∈ Λ) (hne : Λ.Nonempty) (t : ℝ) (r : G →+ ℝ) :
+    UnitalPositiveLinearMap.expectation
+      (UnitalPositiveLinearMap.ofVec (norm_unitCharacterWave hne χ))
+      ⁅hoppingObservable (Λ := Λ) g t, positionObservable r⁆ = 0 :=
+  expectation_bracket_hopping_position_of_neg g hχ hΛ hne t r
 
 end NRS3Cristales

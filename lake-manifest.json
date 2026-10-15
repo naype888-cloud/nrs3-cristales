@@ -7,10 +7,10 @@
    "type": "git",
    "subDir": null,
    "scope": "",
-   "rev": "e5d2ec45dc1566631143c6463bb0aef01c19b8b2",
+   "rev": "02aa2ac6fe558de591ce9dfd3d9d75de44712445",
    "name": "Physlib",
    "manifestFile": "lake-manifest.json",
-   "inputRev": "e5d2ec45dc1566631143c6463bb0aef01c19b8b2",
+   "inputRev": "02aa2ac6fe558de591ce9dfd3d9d75de44712445",
    "inherited": false,
    "configFile": "lakefile.toml"
   },
