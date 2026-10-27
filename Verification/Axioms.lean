@@ -52,3 +52,5 @@ open CondensedMatter Crystal ProbabilisticTheory
 #print axioms NRS3Cristales.card_igualParidad_caja_tres
 #print axioms NRS3Cristales.card_pares_caja_cuatro
 #print axioms NRS3Cristales.card_igualParidad_caja_cuatro
+#print axioms NRS3Cristales.im_val_maxCurrentCubeState_of_even
+#print axioms NRS3Cristales.tension_parteFCC_eq_zero
