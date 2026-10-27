@@ -8,7 +8,9 @@ enlaces de la región, y en cajas grandes tiende a `−½` por la velocidad de g
 Robertson 1934, `|det Ω| ≤ det Σ`, vale también para los estados de cristal de un álgebra sin
 norma. Lean 4 sobre Physlib (rama `mosaic-cristales` del fork).
 
-**[▶ Pruébalo: elige una red, cambia a, b, c y el momento, rompe la simetría](https://naype888-cloud.github.io/nrs3-cristales/)**
+**[▶ El sitio](https://naype888-cloud.github.io/nrs3-cristales/)** · [Didáctica, en ocho pasos](https://naype888-cloud.github.io/nrs3-cristales/didactic/) · [Nota formal, con el libro de lemas](https://naype888-cloud.github.io/nrs3-cristales/formal/) · [Laboratorio: las 14 redes con todos sus parámetros](https://naype888-cloud.github.io/nrs3-cristales/lab/)
+
+El cubo de `N` sitios por eje se muestra con su `C_Nava(N)`: `= 1` solo en `N = 2, 3` (Robertson satura), **estrictamente `> 1` desde `N = 4`**, creciente (monotonía analítica por cotas de Taylor y polinomios de Bernstein, PhyslibAlpha #1735) y con límite `C∞ = √(π²/3 − 2)` (#1734) que no se alcanza.
 
 ![La página](docs/figures/cristales.png)
 
@@ -25,7 +27,7 @@ Cada enunciado se repite, con su prueba, en [`NRS3Cristales/Resumen.lean`](NRS3C
 | hexagonal | 8 | 24 | `hexagonal_card_pointGroup` |
 | ortorrómbicas P, C, I, F | 12, 12, 14, 18 | 8 (las 8 operaciones, explícitas) | `orthorhombic_card_pointGroup` y las otras tres |
 
-Faltan la romboédrica, las dos monoclínicas y la triclínica.
+Las catorce redes de Bravais están: la romboédrica, las dos monoclínicas y la triclínica se fusionaron en PhyslibAlpha (#1823, #1825). Diamante y panal están en la rama `feat-physlibalpha-crystal-diamond-honeycomb` del fork.
 
 ### La forma: la simetría anula entradas
 
@@ -69,6 +71,8 @@ para todas las redes es el límite, la banda.
 ```
 lake build
 lake env lean Verification/Axioms.lean
+node tools/check_core.js          # el modelo numérico del sitio contra las fórmulas de los lemas
+node tools/gen_formal_tables.js   # regenera las tablas de la nota formal desde el mismo núcleo
 ```
 
 `lakefile.toml` fija Physlib en el commit `6aa4163f` de
