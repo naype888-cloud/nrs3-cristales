@@ -195,7 +195,7 @@
       <ul>
         <li><b>N = 2 y N = 3:</b> <code>C = 1</code> exacto. Robertson <b class="g">satura</b>.</li>
         <li><b>N ≥ 4, cualquiera:</b> <code>C &gt; 1</code> <b>estrictamente</b>. No satura: queda un exceso <code>δ(N) = C − 1 &gt; 0</code>, el cuanto algebraico.</li>
-        <li><b>N → ∞:</b> <code>C</code> crece sin parar y se acerca a <code>C<sub>∞</sub> = √(π²/3 − 2) ≈ 1.1357</code>, <b class="v">sin alcanzarlo nunca</b>. El crecimiento es <b>monótono estricto</b> desde N = 5 (cotas de Taylor y polinomios de Bernstein) y el límite viene de la distribución de autovalores de Szegő.</li>
+        <li><b>N → ∞:</b> <code>C</code> crece sin parar y se acerca a <code>C<sub>∞</sub> = √(π²/3 − 2) ≈ 1.1357</code>, <b class="v">sin alcanzarlo nunca</b>. El crecimiento es <b>monótono estricto</b> desde N = 4 (cotas de Taylor y polinomios de Bernstein) y el límite viene de la distribución de autovalores de Szegő.</li>
       </ul>
       <div class="sliders">
         <label class="slide"><span>N<sub>x</sub></span><input type="range" id="nx" min="2" max="60" step="1" value="4"><output id="vnx"></output></label>
@@ -204,11 +204,7 @@
       </div>
       <p class="readout" id="r8" aria-live="polite"></p>
       <p>El <b>cuanto volumétrico</b> es el producto de los tres excesos, <code>δ(N<sub>x</sub>) δ(N<sub>y</sub>) δ(N<sub>z</sub>)</code>: se anula en cuanto un eje tiene 2 o 3 sitios, y es positivo cuando los tres tienen 4 o más.</p>
-      <p class="lean"><span class="chip lean">Lean</span> <code>CNava_sq_eq</code> (forma cerrada de <code>C²</code>), <code>θ_NRS(d) = 0 ⇔ d ∈ {2, 3}</code>:
-        <span class="chip alpha">PhyslibAlpha · NRS <a href="https://github.com/leanprover-community/physlib/pull/1723">#1723</a>, NRS³ <a href="https://github.com/leanprover-community/physlib/pull/1725">#1725</a></span>
-        · <code>uncertaintyRatioSqForm_strictMonoOn</code> (estrictamente creciente en <code>[5, ∞)</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1735">#1735</a></span>
-        · <code>tendsto_uncertaintyRatioSqForm</code> (límite) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1734">#1734</a></span>
-        · <a href="https://naype888-cloud.github.io/nava-robertson-schrodinger/box.html">la caja interactiva del teorema base</a>.</p>
+      <p class="lean"><span class="chip lean">Lean</span> <code>uncertaintyRatio_sq_eq</code> (forma cerrada de <code>C²</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1732">#1732</a></span> · <code>uncertaintyRatio_eq_one_iff</code> (<code>C = 1</code> ⇔ <code>N = 2, 3</code>), <code>one_lt_uncertaintyRatio</code> (<code>N ≥ 4</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1723">#1723</a></span> · <code>uncertaintyRatio_lt_uncertaintyRatio</code> (estrictamente creciente desde <code>N = 4</code>), <code>uncertaintyRatio_lt_sqrt_pi_sq_div_three_sub_two</code> (por debajo de <code>C∞</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1735">#1735</a></span> · <code>tendsto_uncertaintyRatio</code> (límite) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1734">#1734</a></span> · cubo: <code>robertson_schrodinger_cube</code>, <code>volQuantum_pos</code> <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1725">#1725</a> <a href="https://github.com/leanprover-community/physlib/pull/1756">#1756</a></span> · <a href="https://naype888-cloud.github.io/nava-robertson-schrodinger/box.html">la caja interactiva del teorema base</a>.</p>
     </div>
     <div class="fig">
       <canvas class="cv sq" id="c8a" aria-label="El cubo abierto de Nx por Ny por Nz sitios"></canvas>

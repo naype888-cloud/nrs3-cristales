@@ -247,7 +247,7 @@
   }
 
   // ---- the cube of N sites per axis: C_Nava(N), the excess δ and the volumetric quantum ------------------
-  // C² has the closed form of CNava_sq_eq with θ = π/(N+1); C(N) = 1 exactly for N = 2, 3 (Robertson saturates)
+  // C² has the closed form of uncertaintyRatio_sq_eq with θ = π/(N+1); C(N) = 1 exactly for N = 2, 3 (Robertson saturates)
   // and C(N) > 1 strictly for every N ≥ 4, increasing to C∞ = √(π²/3 − 2) without reaching it.
   const CINF = Math.sqrt(Math.PI * Math.PI / 3 - 2);
   function cNava(N) {
