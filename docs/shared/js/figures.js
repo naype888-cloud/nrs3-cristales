@@ -221,7 +221,7 @@
     for (let n = 2; n <= Nmax; n++) { const x = X(n), y = Y(C.cNava(n)); n === 2 ? g.moveTo(x, y) : g.lineTo(x, y); }
     g.stroke();
     g.fillStyle = P.green; g.fillRect(X(2) - 3, Y(1) - 3, 6, 6); g.fillRect(X(3) - 3, Y(1) - 3, 6, 6);
-    g.fillText("N = 2, 3: C = 1 (satura)", X(2) + 8, Y(1) - 8);
+    g.fillText("N = 2, 3: C = 1 (satura)", X(2) + 8, Y(1) + 20);
     const cols = [P.blue, P.orange, P.violet], names = ["x", "y", "z"];
     Ns.forEach((n, j) => {
       const nn = Math.min(n, Nmax), x = X(nn), y = Y(C.cNava(n));

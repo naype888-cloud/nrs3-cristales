@@ -317,6 +317,18 @@
     <i>(H, X)</i>: <i>Σ<sub>HX</sub><sup>2</sup> + Ω<sub>HX</sub><sup>2</sup> ≤ Σ<sub>HH</sub>Σ<sub>XX</sub></i>, con <i>Σ<sub>HX</sub> = 0</i> en la onda plana.</p>
   </div>
 
+  <div class="prop">
+    <div class="h">Observación 6.4 <span>· dos tipos de pares, que no se mezclan · <code>bracket_alongX_alongY</code> · <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1725">#1725</a></span></span></div>
+    <div class="tw"><table>
+      <tr><th>par</th><th>qué es</th><th><i>Ω</i></th><th>cota</th></tr>
+      <tr><td>conjugado <i>(T<sub>d</sub>, P<sub>d</sub>)</i>, <i>(H, X)</i> de un eje</td><td>no conmutan</td><td><i>≠ 0</i></td><td>Robertson–Schrödinger; el defecto es estricto desde <i>N ≥ 4</i></td></tr>
+      <tr><td>de ejes <i>(x, y)</i></td><td>conmutan</td><td><i>= 0</i></td><td>solo la positividad de la matriz de Gram</td></tr>
+    </table></div>
+    <p>El defecto <i>T<sub>d</sub>:P<sub>d</sub></i> de cada eje se conserva tal cual en el cubo: <i>Ω</i> y <i>Σ</i> son diagonales por bloques, un bloque por eje
+    (<code>bracketMatrix_cubePairs</code>, <code>covarianceMatrix_maxCurrentCubeState</code>). El argumento sobre los enlaces y lo que sigue abierto está en
+    <a href="https://github.com/naype888-cloud/nrs3-cristales/blob/main/ENLACES.md"><code>ENLACES.md</code></a>.</p>
+  </div>
+
   <!-- ===================================================================== -->
   <h2 id="s7"><span class="no">§7</span>Lo que está abierto, dicho sin rodeos</h2>
   <ol>

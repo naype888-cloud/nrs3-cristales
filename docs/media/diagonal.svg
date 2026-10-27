@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 300" role="img" aria-label="Triángulo rectángulo: los catetos A y B son dos pasos de eje que conmutan; la hipotenusa es la composición, la única palabra con dos ejes">
+<rect width="680" height="300" fill="#fcfcfb"/>
+<g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="14" fill="#0b0b0b">
+<path d="M80 240 V100 H260" stroke="#8a8985" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>
+<path d="M80 240 H260 V100" stroke="#2a78d6" stroke-width="3" fill="none"/>
+<path d="M80 240 L260 100" stroke="#eb6834" stroke-width="3"/>
+<circle cx="80" cy="240" r="5" fill="#0b0b0b"/><circle cx="260" cy="240" r="4" fill="#2a78d6"/>
+<circle cx="260" cy="100" r="5" fill="#eb6834"/><circle cx="80" cy="100" r="4" fill="#8a8985"/>
+<text x="80" y="266" text-anchor="middle">(0,0,0)</text>
+<text x="195" y="266" text-anchor="middle" fill="#2a78d6">A · paso de eje x</text>
+<text x="272" y="176" fill="#2a78d6">B · eje y</text>
+<text x="260" y="84" text-anchor="middle">(1,1,0)</text>
+<text x="140" y="150" fill="#eb6834" transform="rotate(-37.9 140 150)" text-anchor="middle">diagonal: A y B juntos</text>
+<text x="380" y="110" font-size="15">x · y = y · x</text>
+<text x="380" y="132" fill="#67665f">dos palabras al mismo destino,</text>
+<text x="380" y="152" fill="#67665f">una por orden de los catetos</text>
+<text x="380" y="190" font-size="15">c² = a² + b²  (D4)</text>
+<text x="380" y="212" fill="#67665f">la resultante, no un tercer</text>
+<text x="380" y="232" fill="#67665f">elemento independiente</text>
+</g></svg>

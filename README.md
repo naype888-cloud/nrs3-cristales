@@ -14,6 +14,13 @@ El cubo de `N` sitios por eje se muestra con su `C_Nava(N)`: `= 1` solo en `N = 
 
 ![La página](docs/figures/cristales.png)
 
+## Los enlaces y la revisión con Tom
+
+La diagonal no es un paso primitivo con operador propio, pero sí un enlace efectivo bien definido: es la única palabra de segundo orden con dos
+ejes, y los dos órdenes coinciden porque los ejes conmutan. El argumento completo, con cada lema, lo que no está probado y qué proponer en el
+PR 4, está en [`ENLACES.md`](ENLACES.md). El plan de 9 PR y cuáles van a revisión de Tom, en su §6: hoy el que está abierto para su revisión es
+[#1972](https://github.com/leanprover-community/physlib/pull/1972).
+
 ## Resultados
 
 Cada enunciado se repite, con su prueba, en [`NRS3Cristales/Resumen.lean`](NRS3Cristales/Resumen.lean).
