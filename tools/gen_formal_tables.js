@@ -7,6 +7,7 @@ let html = fs.readFileSync(file, "utf8");
 
 const PH = "https://github.com/leanprover-community/physlib/";
 const FORK = "https://github.com/naype888-cloud/physlib/blob/";
+const CORPUS = "https://github.com/naype888-cloud/nava-robertson-schrodinger/blob/main/";
 const REPO = "https://github.com/naype888-cloud/nrs3-cristales/blob/main/";
 const chip = (k, t, href) => `<span class="chip ${k}">${href ? `<a href="${href}">${t}</a>` : t}</span>`;
 const st = {
@@ -62,6 +63,8 @@ const lg = [
   ["Cuanto volumétrico <i>δ(Nx)δ(Ny)δ(Nz)</i>: nulo si algún eje tiene 2 o 3 sitios, positivo desde 4 × 4 × 4", "volQuantum_eq_zero_iff, volQuantum_pos", P + "CondensedMatter/TightBindingChain/Cube/VolumetricQuantum.lean", PH + "blob/master/", st.alpha(1756)],
   ["<i>C</i> estrictamente creciente desde N = 4 y por debajo de <i>C<sub>∞</sub></i> (Taylor y Bernstein)", "uncertaintyRatio_lt_uncertaintyRatio, uncertaintyRatioSqForm_strictMonoOn", P + "CondensedMatter/TightBindingChain/MaxCurrentState/LongChainMonotonicity.lean", PH + "blob/master/", st.alpha(1735)],
   ["Límite <i>C → C<sub>∞</sub> = √(π²/3 − 2)</i> (Szegő)", "tendsto_uncertaintyRatio, tendsto_uncertaintyRatioSqForm", P + "CondensedMatter/TightBindingChain/MaxCurrentState/LongChainLimit.lean", PH + "blob/master/", st.alpha(1734)],
+  ["El paso de eje es estrictamente el más corto: 1 &lt; √2 &lt; √3; con un solo eje no hay diagonal", "OrthogonalStep.minimal_adjacency_is_orthogonal, DiagonalNeedsTwoAxes.no_diagonal_of_one_axis", "NavaRobertsonIndependent/Mathematics/D4_WhyNotDiagonal.lean", CORPUS, chip("pr", "corpus NRS", "https://github.com/naype888-cloud/nava-robertson-schrodinger")],
+  ["Banda del ángulo NRS: <i>θ<sub>NRS</sub>(4) ≤ θ<sub>NRS</sub>(d) &lt; arccos(1/C<sub>∞</sub>)</i> para d ≥ 4", "SpectrumBounds.angleNRS_spectrum_bounds", "NavaRobertsonIndependent/Mathematics/D48_SpectrumBounds.lean", CORPUS, chip("pr", "corpus NRS", "https://github.com/naype888-cloud/nava-robertson-schrodinger")],
 ];
 let led = `<tr><th>enunciado</th><th>Lean</th><th>archivo</th><th>estado</th></tr>\n`;
 for (const [q, l, f, base, s] of lg) {
