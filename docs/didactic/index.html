@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Versión didáctica — NRS³ · Cristales</title>
+<meta name="description" content="Del cristal a la incertidumbre en ocho pasos: una red, sus vecinos, su simetría, un estado, las matrices Σ y Ω, la banda y la cota de Robertson y el cubo de N sitios. Con figuras que se mueven.">
+<link rel="icon" href="../media/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="NRS³ · Cristales">
+<meta property="og:title" content="Del cristal a la incertidumbre, en ocho pasos">
+<meta property="og:description" content="La simetría de la red pone ceros donde debe; el espectro da el tamaño de lo que queda.">
+<meta property="og:url" content="https://naype888-cloud.github.io/nrs3-cristales/didactic/">
+<meta property="og:image" content="https://naype888-cloud.github.io/nrs3-cristales/media/og.png">
+<script src="../shared/js/theme.js?v=20261027" data-toggle></script>
+<link rel="stylesheet" href="../shared/css/page.css?v=20261027">
+<link rel="stylesheet" href="../shared/css/crystal.css?v=20261027">
+</head>
+<body>
+<main class="wide">
+  <nav class="navbar" aria-label="Sitio">
+    <a class="brand" href="../">NRS³ · Cristales<span class="sect"> · Didáctica</span></a>
+    <a class="pill" href="./" aria-current="page">Didáctica</a>
+    <a class="pill" href="../formal/">Formal</a>
+    <a class="pill" href="../lab/">Laboratorio</a>
+    <button class="pill" id="theme" type="button">☀ Claro</button>
+  </nav>
+
+  <p class="series">Versión didáctica · sin lenguaje previo</p>
+  <h1>Del cristal a la incertidumbre, en ocho pasos</h1>
+  <div class="rule" aria-hidden="true"></div>
+
+  <section class="abstract" aria-label="La idea en cuatro líneas">
+    <span class="k">La idea en cuatro líneas</span>
+    <p>Un cristal es una red que se repite. Esa repetición tiene simetrías, y las simetrías <b>obligan</b> a que ciertas
+    cantidades valgan cero, sin calcular nada. Lo que sobrevive lo fija el espectro de la red: una cantidad que cualquiera
+    puede medir, la velocidad de un paquete de onda. Los enunciados están en Lean 4; los números que calcula la página
+    son un modelo numérico y lo dice la etiqueta <span class="chip model">modelo</span>.</p>
+  </section>
+
+  <!-- la red del lector: la elige aquí y la ve en todos los pasos -->
+  <div class="picker" id="picker" role="region" aria-label="Tu red">
+    <div class="picker-head">
+      <span class="lbl">Tu red</span>
+      <select id="latSel" aria-label="Elegir red"></select>
+      <button class="pill" id="rand" type="button">Una al azar</button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <!-- ============================ PASO 1 ============================ -->
+  <section class="step" id="p1">
+    <div class="txt">
+      <h2><span class="no">1</span>Una red es un patrón que se repite</h2>
+      <p>Imagina un papel tapiz en tres dimensiones: la misma celda, una y otra vez, y desde cada punto el mundo se ve
+        igual. Eso es una <b>red de Bravais</b>. Solo hay <b>catorce</b> formas distintas de hacerlo, agrupadas en
+        <b>siete sistemas</b> según su forma general: del más torcido (triclínico) al más regular (cúbico).</p>
+      <p>Toca una de las catorce en la galería: será <b>tu red</b> en los pasos que siguen.</p>
+      <p class="lean"><span class="chip lean">Lean</span> las catorce: grafo y grupo puntual, con <code>Nat.card …pointGroup</code>.
+        <a href="../formal/#s2">Ver la tabla →</a></p>
+    </div>
+    <div class="fig">
+      <div class="gallery" id="gallery" role="list"></div>
+    </div>
+  </section>
+
+  <!-- ============================ PASO 2 ============================ -->
+  <section class="step" id="p2">
+    <div class="txt">
+      <h2><span class="no">2</span>Cada sitio tiene vecinos</h2>
+      <p>Un electrón en el cristal solo salta de un sitio a su vecino. Los <b>enlaces</b> —las líneas naranja— dicen cuáles
+        son esos saltos posibles. Para cada red la lista de enlaces es un dato exacto, no una aproximación.</p>
+      <p class="readout" id="r2" aria-live="polite"></p>
+      <p>Arrastra la figura para girarla. Los sitios más cercanos al ojo se ven más grandes y más opacos.</p>
+      <p class="lean"><span class="chip lean">Lean</span> <code id="l2"></code></p>
+    </div>
+    <div class="fig">
+      <canvas class="cv sq" id="c2" aria-label="La red con el sitio central y sus vecinos"></canvas>
+    </div>
+  </section>
+
+  <!-- ============================ PASO 3 ============================ -->
+  <section class="step" id="p3">
+    <div class="txt">
+      <h2><span class="no">3</span>La red se mapea a sí misma</h2>
+      <p>Una <b>simetría</b> es un movimiento que deja la red como estaba. Hay una que <b>todas</b> las redes tienen: la
+        <b>inversión</b>, que lleva cada sitio <code>n</code> a <code>−n</code>, al lado opuesto del origen. Mueve el
+        control: los sitios naranja cruzan el origen y la red completa no cambia.</p>
+      <label class="slide"><span>inversión</span><input type="range" id="inv" min="0" max="1" step="0.005" value="0" aria-label="Avance de la inversión"><output id="invo">0 %</output></label>
+      <p>El número de simetrías de tu red (su <b>grupo puntual</b>) va de 2 en la triclínica a 48 en las cúbicas.</p>
+      <p class="readout" id="r3" aria-live="polite"></p>
+      <p class="lean"><span class="chip lean">Lean</span> <code>PeriodicGraph.inversion_mem_symmetries</code>: todo grafo periódico con un sitio por celda es centrosimétrico.</p>
+    </div>
+    <div class="fig">
+      <canvas class="cv sq" id="c3" aria-label="La inversión lleva cada sitio a su opuesto y la red no cambia"></canvas>
+    </div>
+  </section>
+
+  <!-- ============================ PASO 4 ============================ -->
+  <section class="step" id="p4">
+    <div class="txt">
+      <h2><span class="no">4</span>Un estado: una onda que recorre la red</h2>
+      <p>Para hablar de incertidumbre hace falta un <b>estado</b> de la partícula. El más simple es una <b>onda plana</b>:
+        el mismo peso en todos los sitios y una fase que gira de sitio en sitio. El <b>color</b> de cada punto es su fase;
+        el vector <code>k</code> dice con qué rapidez gira.</p>
+      <div class="sliders">
+        <label class="slide"><span>k<sub>x</sub></span><input type="range" id="kx" min="-1" max="1" step="0.01" value="0.37"><output id="vkx"></output></label>
+        <label class="slide"><span>k<sub>y</sub></span><input type="range" id="ky" min="-1" max="1" step="0.01" value="-0.52"><output id="vky"></output></label>
+        <label class="slide"><span>k<sub>z</sub></span><input type="range" id="kz" min="-1" max="1" step="0.01" value="0.61"><output id="vkz"></output></label>
+      </div>
+      <div class="bar">
+        <button class="pill" id="onda" type="button" aria-pressed="true">Onda plana (simétrica)</button>
+        <button class="pill" id="alea" type="button" aria-pressed="false">Estado al azar</button>
+      </div>
+      <p>El estado «al azar» tiene la misma forma de fase pero pesos y fases perturbados: rompe la simetría. Guárdalo para el
+        paso siguiente.</p>
+    </div>
+    <div class="fig">
+      <canvas class="cv sq" id="c4" aria-label="La red coloreada por la fase del estado"></canvas>
+    </div>
+  </section>
+
+  <!-- ============================ PASO 5 ============================ -->
+  <section class="step" id="p5">
+    <div class="txt">
+      <h2><span class="no">5</span>Σ y Ω: lo que se desparrama y lo que no conmuta</h2>
+      <p>Medimos cuatro cosas: la energía <code>H</code> y las tres posiciones <code>X, Y, Z</code>. Para cada pareja hay
+        dos números. <b>Σ</b> (azul) dice cuánto <i>se desparraman juntas</i>. <b>Ω</b> (naranja) dice cuánto
+        <i>no conmutan</i>: medir una perturba a la otra.</p>
+      <p>Los cuadros <b class="g">verdes</b> son ceros que la simetría <b>impone</b>. Con la onda plana, <code>Σ<sub>HX</sub> = 0</code>
+        en las tres direcciones: la energía y la posición no están correlacionadas, y no hizo falta calcular nada. Cambia al
+        estado al azar (paso 4) y esos cuadros dejan de ser cero.</p>
+      <p>Las posiciones conmutan entre sí, así que <code>Ω</code> entre posiciones es siempre cero, para cualquier estado.</p>
+      <p class="readout" id="r5" aria-live="polite"></p>
+      <p class="lean"><span class="chip lean">Lean</span> <code>covariance_hopping_position_unitPlaneWave</code>: <code>Σ<sub>HX</sub> = 0</code> en toda onda plana.</p>
+    </div>
+    <div class="fig">
+      <canvas class="cv mats" id="c5" aria-label="Matrices Σ y Ω de H, X, Y, Z"></canvas>
+      <p class="legend"><span><i class="sw" style="background:var(--blue)"></i>Σ</span><span><i class="sw" style="background:var(--orange)"></i>Ω</span><span><i class="sw" style="background:var(--green)"></i>cero forzado por simetría</span></p>
+    </div>
+  </section>
+
+  <!-- ============================ PASO 6 ============================ -->
+  <section class="step" id="p6">
+    <div class="txt">
+      <h2><span class="no">6</span>El tamaño lo fija el espectro</h2>
+      <p>La simetría dice qué entradas valen cero, no cuánto valen las otras. Eso lo da la <b>banda</b>
+        <code>ε(k)</code>: la energía de la onda en función de <code>k</code>. Su pendiente es la <b>velocidad de grupo</b>
+        <span class="v">(violeta)</span>, la velocidad del paquete de ondas.</p>
+      <p>En una región finita, <code>Ω<sub>HX</sub></code> tiene una fórmula exacta: una suma sobre los enlaces que quedan
+        dentro. Al agrandar la caja converge a <b>−½ de la velocidad de grupo</b>. La segunda figura lo muestra: las líneas
+        punteadas son el límite.</p>
+      <label class="slide"><span>t (salto)</span><input type="range" id="t" min="0.2" max="2" step="0.05" value="1"><output id="vt"></output></label>
+      <p class="readout" id="r6" aria-live="polite"></p>
+      <p class="lean"><span class="chip lean">Lean</span> <code>expectation_bracket_unitPlaneWave</code> (fórmula exacta) ·
+        <code>tendsto_expectation_bracket_box</code> (límite −½ v).
+        <span class="chip fork">rama del fork</span></p>
+    </div>
+    <div class="fig">
+      <p class="panel-label">Banda ε(k) y su pendiente</p>
+      <canvas class="cv band" id="c6a" aria-label="La banda ε(k) a lo largo de k con su pendiente"></canvas>
+      <p class="panel-label">Ω a medida que crece la caja</p>
+      <canvas class="cv band" id="c6b" aria-label="Ω de la caja contra el tamaño de la caja, con su límite"></canvas>
+    </div>
+  </section>
+
+  <!-- ============================ PASO 7 ============================ -->
+  <section class="step" id="p7">
+    <div class="txt">
+      <h2><span class="no">7</span>La cota de Robertson</h2>
+      <p>Para cualquier pareja de medidas existe un límite a cuán exactas pueden ser a la vez. Para <code>(H, X)</code> la
+        desigualdad de <b>Robertson–Schrödinger</b> dice</p>
+      <p class="eqline"><code>Cov(H,X)² + Ω<sub>HX</sub>² ≤ Var H · Var X</code></p>
+      <p>Aquí la simetría ya trabajó: en la onda plana <code>Cov = 0</code>, y todo el peso de la cota recae en el
+        corchete <code>Ω</code>. Las barras comparan los dos lados para <b>tu red</b>.</p>
+      <p class="readout" id="r7" aria-live="polite"></p>
+      <p class="note">Con las cuatro medidas <code>H, X, Y, Z</code> a la vez, la cota de Robertson de 1934
+        <code>|det Ω| ≤ det Σ</code> vale, pero es el caso trivial: como las posiciones conmutan, <code>det Ω = 0</code>. El
+        contenido está en la forma que la simetría impone a <code>Σ</code> y <code>Ω</code>, no en ese determinante.</p>
+      <p class="lean"><span class="chip lean">Lean</span> <code>AlgState.robertson_schrodinger</code>, <code>AlgState.robertson_det</code>:
+        para el estado de cualquier álgebra con estrella.</p>
+    </div>
+    <div class="fig">
+      <div class="bars" id="c7" role="img" aria-label="Barras de Robertson–Schrödinger"></div>
+    </div>
+  </section>
+
+  <!-- ============================ PASO 8 ============================ -->
+  <section class="step" id="p8">
+    <div class="txt">
+      <h2><span class="no">8</span>El cubo de N sitios: cuándo satura y cuándo no</h2>
+      <p>Hasta aquí la región era una caja de la red. Ahora tomamos el <b>cubo abierto</b> de <i>N<sub>x</sub> × N<sub>y</sub> × N<sub>z</sub></i> sitios:
+        cada eje es un camino de <i>N</i> sitios, y los tres ejes conmutan. Cada eje tiene su constante
+        <code>C<sub>Nava</sub>(N)</code>: el cociente entre lo que el estado de corriente máxima usa y lo que Robertson permite.</p>
+      <ul>
+        <li><b>N = 2 y N = 3:</b> <code>C = 1</code> exacto. Robertson <b class="g">satura</b>.</li>
+        <li><b>N ≥ 4, cualquiera:</b> <code>C &gt; 1</code> <b>estrictamente</b>. No satura: queda un exceso <code>δ(N) = C − 1 &gt; 0</code>, el cuanto algebraico.</li>
+        <li><b>N → ∞:</b> <code>C</code> crece sin parar y se acerca a <code>C<sub>∞</sub> = √(π²/3 − 2) ≈ 1.1357</code>, <b class="v">sin alcanzarlo nunca</b>. El crecimiento es <b>monótono estricto</b> desde N = 5 (cotas de Taylor y polinomios de Bernstein) y el límite viene de la distribución de autovalores de Szegő.</li>
+      </ul>
+      <div class="sliders">
+        <label class="slide"><span>N<sub>x</sub></span><input type="range" id="nx" min="2" max="60" step="1" value="4"><output id="vnx"></output></label>
+        <label class="slide"><span>N<sub>y</sub></span><input type="range" id="ny" min="2" max="60" step="1" value="3"><output id="vny"></output></label>
+        <label class="slide"><span>N<sub>z</sub></span><input type="range" id="nz" min="2" max="60" step="1" value="9"><output id="vnz"></output></label>
+      </div>
+      <p class="readout" id="r8" aria-live="polite"></p>
+      <p>El <b>cuanto volumétrico</b> es el producto de los tres excesos, <code>δ(N<sub>x</sub>) δ(N<sub>y</sub>) δ(N<sub>z</sub>)</code>: se anula en cuanto un eje tiene 2 o 3 sitios, y es positivo cuando los tres tienen 4 o más.</p>
+      <p class="lean"><span class="chip lean">Lean</span> <code>CNava_sq_eq</code> (forma cerrada de <code>C²</code>), <code>θ_NRS(d) = 0 ⇔ d ∈ {2, 3}</code>:
+        <span class="chip alpha">PhyslibAlpha · NRS <a href="https://github.com/leanprover-community/physlib/pull/1723">#1723</a>, NRS³ <a href="https://github.com/leanprover-community/physlib/pull/1725">#1725</a></span>
+        · <code>uncertaintyRatioSqForm_strictMonoOn</code> (estrictamente creciente en <code>[5, ∞)</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1735">#1735</a></span>
+        · <code>tendsto_uncertaintyRatioSqForm</code> (límite) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1734">#1734</a></span>
+        · <a href="https://naype888-cloud.github.io/nava-robertson-schrodinger/box.html">la caja interactiva del teorema base</a>.</p>
+    </div>
+    <div class="fig">
+      <canvas class="cv sq" id="c8a" aria-label="El cubo abierto de Nx por Ny por Nz sitios"></canvas>
+      <p class="panel-label">C_Nava(N): satura solo en 2 y 3</p>
+      <canvas class="cv band" id="c8b" aria-label="C de Nava contra N con su asíntota"></canvas>
+      <p class="legend"><span><i class="sw" style="background:var(--green)"></i>eje que satura (N ≤ 3)</span><span><i class="sw" style="background:var(--violet)"></i>eje estricto (N ≥ 4)</span></p>
+    </div>
+  </section>
+
+  <!-- ============================ QUÉ ESTÁ PROBADO ============================ -->
+  <section class="step solo" id="p9">
+    <div class="txt wide-txt">
+      <h2><span class="no">★</span>Qué está probado y qué no</h2>
+      <div class="tri">
+        <div><span class="chip lean">Lean</span><p>Cada enunciado con su nombre. Se comprueba con <code>lake build</code> y <code>#print axioms</code>: solo <code>propext</code>, <code>Classical.choice</code> y <code>Quot.sound</code>.</p></div>
+        <div><span class="chip model">modelo</span><p>Los números de esta página (matrices, bandas, cajas) los calcula JavaScript con las mismas definiciones. Coinciden con la fórmula del lema a precisión de máquina; no son una prueba.</p></div>
+        <div><span class="chip design">abierto</span><p>La parte escalar del lema de Schur, la caja finita de FCC/BCC (no tiene fórmula cerrada) y los estados antiunitarios en el marco de Tom no están cerrados. Ver §7 de la nota formal.</p></div>
+      </div>
+      <p class="pager"><a href="../formal/">Seguir con la nota formal →</a> <a href="../lab/">Abrir el laboratorio →</a></p>
+    </div>
+  </section>
+
+  <footer>NRS³ · Cristales · Eduardo Nava-Hernandez · Lean 4 sobre Physlib · <a href="https://github.com/naype888-cloud/nrs3-cristales">código</a></footer>
+</main>
+<script src="../shared/js/cristales-core.js?v=20261027"></script>
+<script src="../shared/js/figures.js?v=20261027"></script>
+<script src="didactic.js?v=20261027"></script>
+</body>
+</html>

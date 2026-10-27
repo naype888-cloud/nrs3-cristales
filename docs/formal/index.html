@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nota formal — NRS³ · Cristales</title>
+<meta name="description" content="La forma de las covarianzas y los corchetes en un cristal: las catorce redes de Bravais y sus grupos puntuales, la inversión, el grupo pequeño de cada k, el lema de Schur, la fórmula exacta de Ω y su límite, y Robertson 1934. Cada enunciado con su nombre en Lean 4 y su estado.">
+<link rel="icon" href="../media/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="NRS³ · Cristales">
+<meta property="og:title" content="La forma de la incertidumbre en un cristal: simetría y espectro">
+<meta property="og:description" content="Catorce redes, sus grupos puntuales, la inversión, el grupo pequeño, Schur, Ω exacta y su límite, y Robertson 1934, en Lean 4.">
+<meta property="og:url" content="https://naype888-cloud.github.io/nrs3-cristales/formal/">
+<meta property="og:image" content="https://naype888-cloud.github.io/nrs3-cristales/media/og.png">
+<script src="../shared/js/theme.js?v=20261027" data-toggle></script>
+<link rel="stylesheet" href="../shared/css/page.css?v=20261027">
+<link rel="stylesheet" href="../shared/css/crystal.css?v=20261027">
+<style>
+  main.formal { max-width: 1040px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 12px/1.4 var(--mono); margin: 14px 0 0; }
+  .toc a { text-decoration: none; color: var(--ink2); } .toc a:hover { color: var(--blue); }
+  td code, th code { font-size: .8em; overflow-wrap: anywhere; }
+  #t-latt td:nth-child(8) { min-width: 17em; } #t-latt td:nth-child(2) { min-width: 9em; } #t-ledger td:nth-child(2) { min-width: 16em; }
+  .tw table td { vertical-align: top; }
+  td.vec { font: 11.5px/1.45 var(--mono); color: var(--ink2); min-width: 15em; }
+  td.sys { font-weight: 620; color: var(--ink2); white-space: nowrap; }
+  .tw.ledger table { font-size: .84rem; }
+  .ref { font-size: .86rem; color: var(--ink2); }
+  .ref li { margin: 3px 0; }
+  pre.cmd { background: var(--panel); border: 1px solid var(--grid); border-radius: 10px; padding: 10px 14px; overflow-x: auto; font: 12.5px/1.6 var(--mono); }
+  .try .controls { margin-bottom: 4px; }
+  .try select { font: inherit; font-size: .86rem; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--grid); background: var(--panel); color: var(--ink); }
+  .try table { font-family: var(--mono); font-size: .8rem; }
+  .try canvas { display: block; width: 100%; aspect-ratio: 2.4 / 1; }
+</style>
+</head>
+<body>
+<main class="formal">
+  <nav class="navbar" aria-label="Sitio">
+    <a class="brand" href="../">NRS³ · Cristales<span class="sect"> · Nota formal</span></a>
+    <a class="pill" href="../didactic/">Didáctica</a>
+    <a class="pill" href="./" aria-current="page">Formal</a>
+    <a class="pill" href="../lab/">Laboratorio</a>
+    <button class="pill" id="theme" type="button">☀ Claro</button>
+  </nav>
+
+  <p class="series">NRS³ Cristales · Nota técnica · Lean 4 sobre Physlib</p>
+  <h1>La forma de la incertidumbre en un cristal: la simetría da las entradas nulas, el espectro da el tamaño</h1>
+  <div class="rule" aria-hidden="true"></div>
+
+  <section class="abstract" aria-label="Resumen">
+    <span class="k">Resumen</span>
+    <p>Sea <i>g</i> una red de Bravais con un sitio por celda, <i>H</i> el salto a primeros vecinos y
+    <i>X<sub>r</sub></i> la posición a lo largo de <i>r</i>. Toda red es centrosimétrica; combinada con la inversión
+    temporal, la inversión impone <i>Σ<sub>HX</sub> = 0</i> en toda onda plana sobre una región simétrica, para las catorce
+    redes. La entrada que sobrevive, <i>Ω<sub>HX</sub></i>, es una suma exacta sobre los enlaces de la región y converge, al
+    crecer la caja, a <i>−½</i> de la velocidad de grupo de la banda. El grupo pequeño de cada <i>k</i> decide, vector por
+    vector, qué direcciones quedan en cero; el lema de Schur anula las covarianzas entre representaciones inequivalentes; y
+    la desigualdad de Robertson de 1934 vale para los estados de cristal de cualquier álgebra con estrella. Cada enunciado
+    lleva su nombre en Lean 4 y su estado de revisión. Los números de las figuras son un modelo numérico, aquí marcado
+    como tal.</p>
+  </section>
+  <nav class="toc" aria-label="Contenido">
+    <a href="#s1">§1 Marco</a><a href="#s2">§2 Las catorce redes</a><a href="#s3">§3 Simetría y ceros</a>
+    <a href="#s4">§4 Forma general y Schur</a><a href="#s5">§5 El tamaño</a><a href="#s6">§6 Robertson</a>
+    <a href="#s7">§7 Lo abierto</a><a href="#s8">§8 Libro de lemas</a><a href="#s9">§9 Reproducir</a>
+  </nav>
+
+  <!-- ===================================================================== -->
+  <h2 id="s1"><span class="no">§1</span>Marco</h2>
+  <p>Una <b>red de Bravais</b> de dimensión <i>d</i> es el grupo de traslaciones <i>ℤ<sup>d</sup></i> con un sitio por celda
+    (<code>Crystal.bravais d</code>). Se embebe en el espacio por tres vectores primitivos <i>v<sub>j</sub></i>: la celda
+    <i>n</i> va a <i>Σ<sub>j</sub> n<sub>j</sub> v<sub>j</sub></i> (<code>Embedding.ofVectors</code>), y la red llena el espacio
+    exactamente cuando los <i>v<sub>j</sub></i> lo generan (<code>isSpaceFilling_ofVectors_iff</code>).
+    Un <b>grafo periódico</b> se da por una lista de enlaces <i>±δ</i> en coordenadas de la red
+    (<code>PeriodicGraph.ofBonds</code>): el sitio <i>n</i> es vecino de <i>n ± δ</i>.</p>
+  <p>Sea <i>Λ ⊂ ℤ<sup>3</sup></i> una región finita <b>simétrica</b>, <i>Λ = −Λ</i>, y <i>ℂ<sup>Λ</sup></i> su espacio de Hilbert. Los
+    observables son el salto <i>H = −t Σ<sub>n∼m</sub> |n⟩⟨m|</i> (<code>hoppingObservable</code>) y la posición
+    <i>X<sub>r</sub> = Σ<sub>n</sub> r(n) |n⟩⟨n|</i> para cada <i>r : ℤ<sup>3</sup> →+ ℝ</i> (<code>positionObservable</code>). Para un estado
+    <i>ω</i> y observables autoadjuntos <i>A, B</i>, sea <i>δA = A − ω(A)</i>,</p>
+  <div class="eq">
+    <math display="block"><msub><mi>Σ</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>=</mo><mi>Re</mi><mspace width=".2em"/><mi>ω</mi><mo>(</mo><mi>δA</mi><mspace width=".15em"/><mi>δB</mi><mo>)</mo><mo>,</mo>
+      <mspace width="1.4em"/><msub><mi>Ω</mi><mrow><mi>A</mi><mi>B</mi></mrow></msub><mo>=</mo><mi>ω</mi><mo>(</mo><mo>⁅</mo><mi>A</mi><mo>,</mo><mi>B</mi><mo>⁆</mo><mo>)</mo><mo>,</mo>
+      <mspace width="1.4em"/><mi>Σ</mi><mo>+</mo><mi>i</mi><mi>Ω</mi><mo>⪰</mo><mn>0</mn><mo>.</mo></math>
+    <span class="tag">(1.1)</span>
+  </div>
+  <p><i>Σ</i> es la covarianza (<code>AlgState.covariance</code>) y <i>Ω</i> el valor medio del corchete autoadjunto
+    (<code>AlgState.bracket</code>): la parte imaginaria de la matriz de Gram de las fluctuaciones. Las posiciones conmutan, así
+    que <i>Ω<sub>X<sub>r</sub>X<sub>s</sub></sub> = 0</i> para todo estado.</p>
+  <div class="prop def">
+    <div class="h">Convención de color y de estado <span>· en esta nota y en las figuras</span></div>
+    <p><span class="chip phys">Physlib</span> fusionado en Physlib. <span class="chip alpha">PhyslibAlpha</span> fusionado en PhyslibAlpha, con su PR.
+      <span class="chip fork">rama del fork</span> escrito, compila y pasa los linters, sin PR todavía.
+      <span class="chip pr">este repo</span> en <code>NRS3Cristales/</code>. <span class="chip model">modelo</span> cálculo numérico, no prueba.</p>
+  </div>
+
+  <!-- ===================================================================== -->
+  <h2 id="s2"><span class="no">§2</span>Las catorce redes y sus grupos puntuales</h2>
+  <p>Cada fila es un grafo periódico con sus enlaces y un lema que fija el <b>orden de su grupo puntual</b>
+    (<code>Nat.card g.pointGroup</code>): las simetrías de la red que fijan el origen, calculadas sobre el grafo. Los vectores
+    son los del embebimiento de Lean; los enlaces, en coordenadas de la red.</p>
+  <div class="tw"><table id="t-latt">
+<!--LT:begin-->
+<tr><th>sistema</th><th>red</th><th>vectores primitivos</th><th>enlaces ±, coord. de la red</th><th class="num">vec.</th><th class="num">|G|</th><th>holoedría</th><th>Lean</th><th>estado</th></tr>
+<tr><td class="sys">Triclínico</td><td>Triclínica <code>aP</code></td><td class="vec">(a,0,0) · (b₁,b₂,0) · (c₁,c₂,c₃)</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (2,0,0) (1,1,0) (1,-1,0) (1,0,-1) (0,1,-1)</td><td class="num">16</td><td class="num">2</td><td>Ci = −1</td><td><code>triclinic_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1825">PhyslibAlpha #1825</a></span> <span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1896">#1896</a></span></td></tr>
+<tr><td class="sys">Monoclínico</td><td>Monoclínica simple <code>mP</code></td><td class="vec">(a,0,0) · (0,b,0) · (c₁,0,c₃)</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (1,0,1) (1,0,-1) (2,0,-1) (1,1,0) (1,-1,0) (0,1,1) (0,1,-1)</td><td class="num">20</td><td class="num">4</td><td>C₂h = 2/m</td><td><code>monoclinic_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1825">PhyslibAlpha #1825</a></span> <span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1896">#1896</a></span></td></tr>
+<tr><td class="sys">Monoclínico</td><td>Monoclínica centrada en la base <code>mC</code></td><td class="vec">(a/2,−b/2,0) · (a/2,b/2,0) · (c₁,0,c₃)</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (1,-1,0) (2,-1,0) (1,-2,0) (1,0,-1) (0,1,-1)</td><td class="num">16</td><td class="num">4</td><td>C₂h = 2/m</td><td><code>baseCentredMonoclinic_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1825">PhyslibAlpha #1825</a></span> <span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1896">#1896</a></span></td></tr>
+<tr><td class="sys">Ortorrómbico</td><td>Ortorrómbica simple <code>oP</code></td><td class="vec">(a,0,0) · (0,b,0) · (0,0,c)</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (1,1,0) (1,-1,0) (2,0,0)</td><td class="num">12</td><td class="num">8</td><td>D₂h = mmm</td><td><code>orthorhombic_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1802">PhyslibAlpha #1802</a></span></td></tr>
+<tr><td class="sys">Ortorrómbico</td><td>Ortorrómbica centrada en la base <code>oC</code></td><td class="vec">(a/2,−b/2,0) · (a/2,b/2,0) · (0,0,c)</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (1,1,0) (1,2,0) (2,1,0)</td><td class="num">12</td><td class="num">8</td><td>D₂h = mmm</td><td><code>baseCentredOrthorhombic_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1802">PhyslibAlpha #1802</a></span></td></tr>
+<tr><td class="sys">Ortorrómbico</td><td>Ortorrómbica centrada en el cuerpo <code>oI</code></td><td class="vec">(−a/2,b/2,c/2) · (a/2,−b/2,c/2) · (a/2,b/2,−c/2)</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (1,1,1) (0,1,1) (0,2,2) (1,1,0)</td><td class="num">14</td><td class="num">8</td><td>D₂h = mmm</td><td><code>bodyCentredOrthorhombic_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1802">PhyslibAlpha #1802</a></span></td></tr>
+<tr><td class="sys">Ortorrómbico</td><td>Ortorrómbica centrada en las caras <code>oF</code></td><td class="vec">(0,b/2,c/2) · (a/2,0,c/2) · (a/2,b/2,0)</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (0,1,-1) (1,-1,0) (1,0,-1) (1,-1,-1) (1,-1,-2) (2,-2,-1)</td><td class="num">18</td><td class="num">8</td><td>D₂h = mmm</td><td><code>faceCentredOrthorhombic_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1802">PhyslibAlpha #1802</a></span></td></tr>
+<tr><td class="sys">Tetragonal</td><td>Tetragonal simple <code>tP</code></td><td class="vec">como oP con a = b</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (1,1,0) (1,-1,0)</td><td class="num">10</td><td class="num">16</td><td>D₄h = 4/mmm</td><td><code>tetragonal_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1798">PhyslibAlpha #1798</a></span></td></tr>
+<tr><td class="sys">Tetragonal</td><td>Tetragonal centrada en el cuerpo <code>tI</code></td><td class="vec">como oI con a = b</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (1,1,1) (0,1,1) (1,0,1) (1,1,2) (-1,1,0)</td><td class="num">16</td><td class="num">16</td><td>D₄h = 4/mmm</td><td><code>bodyCentredTetragonal_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1798">PhyslibAlpha #1798</a></span></td></tr>
+<tr><td class="sys">Trigonal</td><td>Romboédrica <code>hR</code></td><td class="vec">(p,q,q) · (q,p,q) · (q,q,p)</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (1,1,0) (0,1,1) (1,0,1)</td><td class="num">12</td><td class="num">12</td><td>D₃d = −3m</td><td><code>rhombohedral_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1823">PhyslibAlpha #1823</a></span></td></tr>
+<tr><td class="sys">Hexagonal</td><td>Hexagonal <code>hP</code></td><td class="vec">(a,0,0) · (−a/2,a√3/2,0) · (0,0,c)</td><td class="vec">(1,0,0) (0,1,0) (1,1,0) (0,0,1)</td><td class="num">8</td><td class="num">24</td><td>D₆h = 6/mmm</td><td><code>hexagonal_card_pointGroup</code></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1798">PhyslibAlpha #1798</a></span></td></tr>
+<tr><td class="sys">Cúbico</td><td>Cúbica simple <code>cP</code></td><td class="vec">como oP con a = b = c</td><td class="vec">(1,0,0) (0,1,0) (0,0,1)</td><td class="num">6</td><td class="num">48</td><td>Oh = m3m</td><td><code>card_pointGroup_hypercubic</code></td><td><span class="chip alpha">PhyslibAlpha</span></td></tr>
+<tr><td class="sys">Cúbico</td><td>Cúbica centrada en el cuerpo <code>cI</code></td><td class="vec">como oI con a = b = c</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (1,1,1)</td><td class="num">8</td><td class="num">48</td><td>Oh = m3m</td><td><code>bcc_card_pointGroup</code></td><td><span class="chip alpha">PhyslibAlpha</span></td></tr>
+<tr><td class="sys">Cúbico</td><td>Cúbica centrada en las caras <code>cF</code></td><td class="vec">como oF con a = b = c</td><td class="vec">(1,0,0) (0,1,0) (0,0,1) (1,-1,0) (0,1,-1) (-1,0,1)</td><td class="num">12</td><td class="num">48</td><td>Oh = m3m</td><td><code>fcc_card_pointGroup</code></td><td><span class="chip alpha">PhyslibAlpha</span></td></tr>
+<!--LT:end-->
+  </table></div>
+  <p class="ref"><b>Lectura.</b> Los siete órdenes <i>2, 4, 8, 12, 16, 24, 48</i> son los de las siete holoedrías cristalográficas
+    (<i>C<sub>i</sub>, C<sub>2h</sub>, D<sub>2h</sub>, D<sub>3d</sub>, D<sub>4h</sub>, D<sub>6h</sub>, O<sub>h</sub></i>). Lean demuestra el
+    <b>orden</b>; que el grupo sea isomorfo al grupo nombrado es una identificación por orden y por construcción, no un
+    isomorfismo probado. Los enlaces de la romboédrica valen cuando <i>−1/4 &lt; cos α &lt; 0</i>; en las tetragonales y la hexagonal,
+    cuando se cumple la condición de las figuras (<a href="../lab/">laboratorio</a>); fuera de ese rango el grafo no cambia y los
+    lemas siguen valiendo, cambia solo la geometría.</p>
+
+  <h3>Redes con base: diamante y panal</h3>
+  <div class="prop">
+    <div class="h">Proposición 2.1 <span>· <code>diamond_card_pointGroup</code>, <code>honeycomb_card_pointGroup</code> · <span class="chip fork">rama del fork</span></span></div>
+    <p>El grupo puntual del diamante es isomorfo al de la FCC, de orden <b>48</b> (<code>diamondPointGroupMulEquiv</code>): 24
+    operaciones conservan las dos subredes y 24 las intercambian. El del panal es isomorfo al de la triangular, de orden
+    <b>12</b> (<code>honeycombPointGroupMulEquiv</code>, <code>triangular_card_pointGroup</code>). Rama
+    <code>feat-physlibalpha-crystal-diamond-honeycomb</code>; la maquinaria de subredes en la que se apoya está fusionada
+    <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1826">#1826</a></span>.</p>
+  </div>
+
+  <!-- ===================================================================== -->
+  <h2 id="s3"><span class="no">§3</span>La simetría anula entradas</h2>
+  <p>La dinámica es invariante bajo el grupo espacial completo, y un estado individual puede romper algunas de sus simetrías:
+    el estado de un antiferromagneto es invariante bajo la traslación por dos sitios, no por uno. Las simetrías que el estado
+    conserva restringen la matriz de covarianzas.</p>
+
+  <div class="prop">
+    <div class="h">Proposición 3.1 <span>· inversión · <code>PeriodicGraph.inversion_mem_symmetries</code> · <span class="chip fork">rama del fork</span></span></div>
+    <p>Todo grafo periódico con un sitio por celda sobre un grupo abeliano es <b>centrosimétrico</b>: <i>n ↦ −n</i> es una
+    simetría del grafo (<code>adj_neg</code>, <code>bonded_neg</code>). En particular lo es cada una de las catorce redes.</p>
+    <p class="proof">Si <i>m = n + δ</i> es un enlace, también lo es <i>−m = −n − δ</i>, porque la lista de enlaces contiene a <i>−δ</i> junto a <i>δ</i>.</p>
+  </div>
+
+  <div class="prop">
+    <div class="h">Proposición 3.2 <span>· inversión por inversión temporal · <code>inversionReversal_hopping</code>, <code>inversionReversal_position</code> · <span class="chip fork">rama del fork</span></span></div>
+    <p>Sea <i>f(ψ)(n) = ψ(−n)<sup>*</sup></i> sobre <i>ℂ<sup>Λ</sup></i>, antiunitario y de cuadrado la identidad. Entonces</p>
+    <div class="eq"><math display="block"><mi>f</mi><mspace width=".15em"/><mi>H</mi><mspace width=".15em"/><mi>f</mi><mo>=</mo><mi>H</mi><mo>,</mo><mspace width="1.4em"/><mi>f</mi><mspace width=".15em"/><msub><mi>X</mi><mi>r</mi></msub><mspace width=".15em"/><mi>f</mi><mo>=</mo><mo>−</mo><msub><mi>X</mi><mi>r</mi></msub><mo>.</mo></math><span class="tag">(3.1)</span></div>
+  </div>
+
+  <div class="prop">
+    <div class="h">Teorema 3.3 <span>· ceros de una onda plana · <code>covariance_hopping_position_unitPlaneWave</code> · <span class="chip fork">rama del fork</span></span></div>
+    <p>Para toda región simétrica no vacía, todo <i>k</i> y toda dirección <i>r</i>, el estado <i>ψ<sub>k</sub> = |Λ|<sup>−1/2</sup> e<sup>i k·n</sup></i> cumple
+    <b><i>Σ<sub>H X<sub>r</sub></sub> = 0</i></b>.</p>
+    <p class="proof">Se tiene <i>f ψ<sub>k</sub> = ψ<sub>k</sub></i> (<code>inversionReversal_planeWave</code>). Un antiunitario de cuadrado la identidad que fija
+    un estado, fija <i>A</i> e invierte <i>B</i>, anula <i>Cov(A, B)</i> (<code>covariance_ofVec_eq_zero_of_antiunitary</code>); se aplica con (3.1).</p>
+  </div>
+
+  <div class="prop">
+    <div class="h">Proposición 3.4 <span>· unitaria frente a antiunitaria · <code>covariance_eq_zero_of_symm</code>, <code>expectation_bracket_eq_zero_of_symm</code>, <code>…_of_reverse</code> · <span class="chip fork">rama del fork</span></span></div>
+    <div class="tw"><table>
+      <tr><th>simetría del estado</th><th>fija <i>A</i>, invierte <i>B</i> ⇒</th></tr>
+      <tr><td>unitaria <i>σ</i> (traslación, reflexión)</td><td><i>Σ<sub>AB</sub> = 0</i> y <i>Ω<sub>AB</sub> = 0</i></td></tr>
+      <tr><td>antiunitaria (inversión temporal, partícula–hueco)</td><td><i>Σ<sub>AB</sub> = 0</i>; <i>Ω<sub>AB</sub></i> sobrevive entre paridades y se anula dentro de una misma</td></tr>
+    </table></div>
+    <p>Es la razón de que, en la onda plana, <i>Σ<sub>HX</sub></i> sea cero y <i>Ω<sub>HX</sub></i> no: el estado es invariante bajo
+    la inversión <b>temporal</b> compuesta con la espacial, que es antiunitaria. Un estado de amplitudes reales, invariante bajo
+    la inversión temporal sola, tiene <i>⟨J⟩ = 0</i> y anula también <i>Ω<sub>HX</sub></i> (el caso trivial de Robertson).
+    En la cadena abierta, <code>TightBindingChain.covariance_maxCurrentState</code> lo muestra con la simetría partícula–hueco
+    <span class="chip alpha">PhyslibAlpha</span>.</p>
+  </div>
+
+  <div class="prop">
+    <div class="h">Teorema 3.5 <span>· grupo pequeño de <i>k</i> · <code>covariance_hopping_position_littleGroup</code>, <code>expectation_bracket_hopping_position_littleGroup</code> · <span class="chip fork">rama del fork</span></span></div>
+    <p>Sea <i>s</i> una operación del grupo puntual que fija el carácter <i>k</i> (<i>s ∈ littleGroup χ</i>) e invierte la dirección
+    <i>r</i> (<i>r∘s<sup>−1</sup> = −r</i>). Entonces en <i>ψ<sub>k</sub></i>: <i>Σ<sub>H X<sub>r</sub></sub> = Ω<sub>H X<sub>r</sub></sub> = 0</i>, y la velocidad de grupo
+    a lo largo de <i>r</i> se anula.</p>
+    <p><b>Corolario (Γ y esquinas de la zona).</b> Si <i>χ(−n) = χ(n)</i>, la inversión está en el grupo pequeño y
+    <i>Ω<sub>H X<sub>r</sub></sub> = 0</i> en toda dirección (<code>expectation_bracket_hopping_position_of_neg</code>): en Γ, Σ y Ω se
+    anulan a la vez, el caso trivial; en un <i>k</i> genérico solo se anula Σ.</p>
+    <p><b>Invariancia.</b> <code>expectation_bracket_hopping_position_comp_littleGroup</code>: <i>Ω<sub>H, X<sub>r∘A<sup>−1</sup></sub></sub> = Ω<sub>H, X<sub>r</sub></sub></i> para <i>A</i> en el
+    grupo pequeño; <i>Ω<sub>HX</sub></i>, como función de la dirección, vive en el subespacio fijo. Ejemplo en este repo
+    (<code>NRS3Cristales.omega_diagonal</code>, <span class="chip pr">este repo</span>): en la red cuadrada, con <i>k</i> en la diagonal,
+    <i>Ω<sub>HX</sub> = Ω<sub>HY</sub></i> en el cuadrado <i>{0, …, N}<sup>2</sup></i>.</p>
+  </div>
+
+  <!-- ===================================================================== -->
+  <h2 id="s4"><span class="no">§4</span>La forma general: la forma de covarianza y Schur</h2>
+  <p>La Proposición 3.4 usa un observable por vez. La forma general trata todo el álgebra a la vez. Para un estado <i>ω</i> de una
+    <i>⋆</i>-álgebra <i>A</i>, la <b>forma de covarianza</b> es</p>
+  <div class="eq"><math display="block"><msub><mi>C</mi><mi>ω</mi></msub><mo>(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo>)</mo><mo>=</mo><mi>ω</mi><mo>(</mo><msup><mi>a</mi><mo>⋆</mo></msup><mi>b</mi><mo>)</mo><mo>−</mo><mover><mrow><mi>ω</mi><mo>(</mo><mi>a</mi><mo>)</mo></mrow><mo>―</mo></mover><mi>ω</mi><mo>(</mo><mi>b</mi><mo>)</mo><mo>,</mo>
+    <mspace width="1.2em"/><msub><mi>C</mi><mi>ω</mi></msub><mo>(</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo>)</mo><mo>=</mo><mi>Σ</mi><mo>+</mo><mi>i</mi><mi>Ω</mi><mspace width=".4em"/><mtext>si </mtext><mi>a</mi><mo>,</mo><mi>b</mi><mtext> autoadjuntos.</mtext></math><span class="tag">(4.1)</span></div>
+  <div class="prop">
+    <div class="h">Proposición 4.2 <span>· <code>covarianceForm</code>, <code>covarianceForm_selfAdjoint</code>, <code>posSemidef_covarianceMatrixForm</code>, <code>conjTranspose_mul_covarianceMatrixForm_mul</code> · <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1822">#1822</a></span></span></div>
+    <p><i>C<sub>ω</sub></i> es semidefinida positiva (es el producto interno del espacio de Hilbert del estado). Si un
+    <i>⋆</i>-automorfismo <i>σ</i> deja invariante a <i>ω</i> y actúa en un subespacio de dimensión finita por una matriz <i>R</i>, la matriz
+    <i>M</i> de <i>C<sub>ω</sub></i> cumple <i>R<sup>H</sup> M R = M</i>.</p>
+  </div>
+  <div class="prop">
+    <div class="h">Teorema 4.3 <span>· Schur · <code>covarianceMatrixForm_eq_zero_of_irreducible</code> · <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1822">#1822</a></span></span></div>
+    <p>Si <i>V</i> y <i>W</i> son subespacios invariantes e irreducibles, inequivalentes, entonces <i>C<sub>ω</sub>(V, W) = 0</i>. La parte
+    escalar (para una sola representación irreducible, <i>M = λ·1</i>) no está cerrada; ver §7.</p>
+  </div>
+
+  <h3>La forma de <i>M</i> por sistema cristalino</h3>
+  <p>Sean <i>a<sub>1</sub>, a<sub>2</sub>, a<sub>3</sub></i> observables que se transforman como los vectores primitivos bajo el grupo puntual
+    (<code>Realises</code>). La invariancia <i>R<sup>H</sup> M R = M</i> con las matrices enteras del grupo da:</p>
+  <div class="tw"><table>
+    <tr><th>sistema</th><th>operación que decide</th><th>forma de <i>M</i></th><th>Lean</th></tr>
+    <tr><td>triclínico</td><td>solo la inversión, que actúa trivialmente</td><td>libre</td><td></td></tr>
+    <tr><td>monoclínico</td><td>reflexión <i>b ↦ −b</i></td><td>el eje <i>b</i> se desacopla del plano <i>a, c</i>; el bloque <i>a–c</i> queda libre</td><td><code>covarianceMatrixForm_monoclinic</code></td></tr>
+    <tr><td>ortorrómbico</td><td>reflexiones en los planos coordenados</td><td>diagonal</td><td><code>covarianceMatrixForm_orthorhombic</code></td></tr>
+    <tr><td>romboédrico</td><td>permutación cíclica y reflexiones</td><td><i>M = α·1 + β(J − 1)</i></td><td><code>covarianceMatrixForm_rhombohedral</code></td></tr>
+    <tr><td>cúbico y diamante</td><td>además <i>x ↦ −x</i></td><td><i>M = α·1</i></td><td><code>covarianceMatrixForm_cubic</code></td></tr>
+    <tr><td>plano hexagonal</td><td>solo <i>C<sub>3</sub></i>; con reflexión</td><td><i>[[α, β],[−β, α]]</i> (cabe <i>Ω<sub>xy</sub></i>); con reflexión, escalar</td><td><code>covarianceMatrixForm_rotation</code>, <code>…_rotation_reflection</code></td></tr>
+  </table></div>
+  <p>Todas son <span class="chip fork">rama del fork</span> (<code>feat-physlibalpha-crystal-covariance-shape</code>). Para el vector <i>b</i> frente a
+    <i>a<sub>j</sub></i>: la inversión anula la covarianza (<code>covarianceForm_vector_eq_zero_of_inversion</code>); en la romboédrica,
+    <i>C<sub>3</sub></i> la deja a lo largo de <i>(1,1,1)</i> (<code>covarianceForm_rhombohedral_vector</code>).</p>
+
+  <h3>Los vecinos de FCC y BCC son palabras de pasos de eje</h3>
+  <div class="prop">
+    <div class="h">Resultado <span>· <code>NRS3Cristales.det_sub_bipartita</code>, <code>schur_bipartita</code>, <code>palabras2_diagonalCara</code>, <code>palabras3_cuerpo</code> · <span class="chip pr">este repo</span></span></div>
+    <p>En el cubo de ejes, el transporte es el paso <i>p ↦ p ± e<sub>i</sub></i>. Separando las posiciones en <i>P</i> (con átomo) y
+    <i>Q</i> (el resto), la dinámica efectiva sobre <i>P</i> es el complemento de Schur
+    <i>H<sub>eff</sub>(E) = H<sub>PP</sub> + H<sub>PQ</sub>(E − H<sub>QQ</sub>)<sup>−1</sup>H<sub>QP</sub></i>.
+    En <b>FCC</b> (<i>P</i> = suma par), <i>H<sub>PP</sub> = H<sub>QQ</sub> = 0</i> y el complemento es exacto: <i>H<sub>PQ</sub>H<sub>QP</sub>/E</i>, cuyas entradas
+    cuentan palabras de dos pasos de eje: 6 de regreso, 2 a cada <i>±e<sub>i</sub> ± e<sub>j</sub></i>, 1 a cada <i>±2e<sub>i</sub></i>
+    (<i>6 + 12·2 + 6·1 = 36 = 6<sup>2</sup></i>, <code>suma_palabras2</code>). En <b>BCC</b> la diagonal de cuerpo <i>(1,1,1)</i> no se alcanza en dos
+    pasos (<code>palabras2_cuerpo = 0</code>) y se alcanza en tres por 6 palabras (<code>palabras3_cuerpo</code>). Ningún vecino diagonal
+    es un enlace primitivo: todos son palabras del único movimiento elemental, el paso de eje. Además, con transporte real y
+    amplitudes reales la tensión es 0 (<code>tension_eq_zero_of_real</code>), y la parte par del estado de corriente máxima del cubo
+    no carga tensión (<code>tension_parteFCC_eq_zero</code>).</p>
+  </div>
+
+  <!-- ===================================================================== -->
+  <h2 id="s5"><span class="no">§5</span>El tamaño: lo que sobrevive lo fija el espectro</h2>
+  <p>La simetría dice qué entradas son cero, no cuánto valen las otras. Para la onda plana, <i>Ω<sub>HX<sub>r</sub></sub></i> es una suma exacta:</p>
+  <div class="prop">
+    <div class="h">Teorema 5.1 <span>· fórmula exacta · <code>expectation_bracket_unitPlaneWave</code> · <span class="chip fork">rama del fork</span></span></div>
+    <div class="eq"><math display="block"><msub><mi>Ω</mi><mrow><mi>H</mi><msub><mi>X</mi><mi>r</mi></msub></mrow></msub><mo>(</mo><msub><mi>ψ</mi><mi>k</mi></msub><mo>,</mo><mi>Λ</mi><mo>)</mo><mo>=</mo><mo>−</mo><mfrac><mi>t</mi><mrow><mn>2</mn><mo>|</mo><mi>Λ</mi><mo>|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>n</mi><mo>,</mo><mi>m</mi><mo>∈</mo><mi>Λ</mi><mo>,</mo><mspace width=".2em"/><mi>n</mi><mo>∼</mo><mi>m</mi></mrow></munder><mi>r</mi><mo>(</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo>)</mo><mspace width=".2em"/><mi>sin</mi><mo>(</mo><mi>k</mi><mo>·</mo><mo>(</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo>)</mo><mo>)</mo><mo>.</mo></math><span class="tag">(5.1)</span></div>
+  </div>
+  <div class="prop">
+    <div class="h">Teorema 5.2 <span>· banda y límite de la caja · <code>band</code>, <code>hasDerivAt_band</code>, <code>tendsto_expectation_bracket_box</code> · <span class="chip fork">rama del fork</span></span></div>
+    <p>La <b>banda</b> es <i>ε(k) = −t Σ<sub>δ</sub> cos(k·δ)</i>, con <i>δ</i> sobre todos los enlaces <i>±</i>. Su derivada a lo largo de <i>r</i>
+    es la velocidad de grupo <i>v<sub>r</sub> = t Σ<sub>δ</sub> r(δ) sin(k·δ)</i>. En las cajas <i>{0, …, N}<sup>d</sup></i>, por la
+    propiedad de Følner de Tom,</p>
+    <div class="eq"><math display="block"><munder><mo>lim</mo><mrow><mi>N</mi><mo>→</mo><mo>∞</mo></mrow></munder><msub><mi>Ω</mi><mrow><mi>H</mi><msub><mi>X</mi><mi>r</mi></msub></mrow></msub><mo>=</mo><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msub><mo>∂</mo><mi>r</mi></msub><mi>ε</mi><mo>(</mo><mi>k</mi><mo>)</mo><mo>.</mo></math><span class="tag">(5.2)</span></div>
+  </div>
+  <div class="prop">
+    <div class="h">Observación 5.3 <span>· el tiempo sale de la evolución · <code>hasDerivAt_expectation_heisenberg</code>, <code>tendsto_drift_box</code> · <span class="chip fork">rama del fork</span></span></div>
+    <p>En el cuadro de Heisenberg, <i>d/dt ⟨a(t)⟩ = −(2/ℏ)⟨⁅H, a⁆⟩</i> en <i>t = 0</i>; en las cajas grandes <i>⟨X<sub>r</sub>⟩</i> deriva con la
+    velocidad <i>(1/ℏ) ∂<sub>r</sub>ε</i>. <i>Ω<sub>HX</sub></i> es el reloj: el tiempo es el parámetro de la evolución, no un eje del cristal.</p>
+  </div>
+
+  <div class="prop">
+    <div class="h">Teorema 5.4 <span>· el cubo de <i>N</i> sitios por eje · <code>CNava_sq_eq</code>, <code>uncertaintyRatioSqForm_strictMonoOn</code>, <code>tendsto_uncertaintyRatioSqForm</code> · <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1723">#1723</a> <a href="https://github.com/leanprover-community/physlib/pull/1725">#1725</a> <a href="https://github.com/leanprover-community/physlib/pull/1734">#1734</a> <a href="https://github.com/leanprover-community/physlib/pull/1735">#1735</a></span></span></div>
+    <p>En el cubo abierto <i>N<sub>x</sub> × N<sub>y</sub> × N<sub>z</sub></i> los ejes conmutan y cada uno lleva su constante <i>C<sub>Nava</sub>(N)</i>, con
+    <i>θ = π/(N+1)</i> y</p>
+    <div class="eq"><math display="block"><msup><mi>C</mi><mn>2</mn></msup><mo>=</mo><mfrac><mrow><mn>2</mn><mo>(</mo><mi>N</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mrow><mo>(</mo><mi>N</mi><mo>+</mo><mn>1</mn><mo>)</mo><msup><mi>cos</mi><mn>2</mn></msup><mi>θ</mi></mrow></mfrac><mo>(</mo><mfrac><mrow><mo>(</mo><mi>N</mi><mo>+</mo><mn>1</mn><msup><mo>)</mo><mn>2</mn></msup><mo>+</mo><mn>2</mn></mrow><mn>6</mn></mfrac><msup><mi>sin</mi><mn>2</mn></msup><mi>θ</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>.</mo></math><span class="tag">(5.3)</span></div>
+    <ol>
+      <li><i>C(N) = 1</i> exactamente para <i>N = 2, 3</i>: la relación de Robertson <b>satura</b> (<i>θ<sub>NRS</sub>(d) = 0 ⇔ d ∈ {2, 3}</i>).</li>
+      <li><i>C(N) &gt; 1</i> <b>estrictamente</b> para todo <i>N ≥ 4</i>: no satura, queda el exceso <i>δ(N) = C(N) − 1 &gt; 0</i>.</li>
+      <li><i>C²</i> es estrictamente creciente en <i>N ≥ 5</i> (<code>uncertaintyRatioSqForm_strictMonoOn</code>, cotas de Taylor y polinomios de Bernstein) y
+        <i>C(N) → C<sub>∞</sub> = √(π²/3 − 2) ≈ 1.1357</i> (<code>tendsto_uncertaintyRatioSqForm</code>, la distribución de autovalores de Szegő), por debajo y sin alcanzarlo.</li>
+    </ol>
+    <p>El <b>cuanto volumétrico</b> <i>δ(N<sub>x</sub>) δ(N<sub>y</sub>) δ(N<sub>z</sub>)</i> es el producto de los tres excesos: nulo si algún eje tiene 2 o 3 sitios,
+    positivo si los tres tienen 4 o más. Los valores: <i>C(4) = 1.00848, C(5) = 1.01835, C(10) = 1.05581, C(100) = 1.12479</i>
+    <span class="chip model">modelo</span>. Interactivo del teorema base:
+    <a href="https://naype888-cloud.github.io/nava-robertson-schrodinger/box.html">box.html</a>, <a href="https://naype888-cloud.github.io/nava-robertson-schrodinger/hopping.html">hopping.html</a>.</p>
+  </div>
+
+  <div class="card try" id="try">
+    <div class="head"><h3>Pruébalo: Ω<sub>HX</sub> de la caja frente a su límite <span class="chip model">modelo</span></h3><span class="src">fórmula (5.1), región {−L, …, L}³</span></div>
+    <div class="controls">
+      <label>red <select id="tl" aria-label="Elegir red"></select></label>
+      <label>κ<sub>x</sub><input type="range" id="tkx" min="-1" max="1" step="0.01" value="0.37"><output id="tvkx"></output></label>
+      <label>κ<sub>y</sub><input type="range" id="tky" min="-1" max="1" step="0.01" value="-0.52"><output id="tvky"></output></label>
+      <label>κ<sub>z</sub><input type="range" id="tkz" min="-1" max="1" step="0.01" value="0.61"><output id="tvkz"></output></label>
+    </div>
+    <canvas id="tc" aria-label="Ω de la caja contra su tamaño L, con el límite −½ v"></canvas>
+    <div class="tw"><table id="tt"></table></div>
+    <p class="readout" id="tr" aria-live="polite"></p>
+  </div>
+
+  <p class="ref"><b>Caja finita.</b> En una caja finita el óptimo exacto es el espectro finito. Para cajas que son producto de caminos es el
+    <i>cos(π/(N+1))</i> de la cadena y del cubo, ya fusionado en Physlib. En FCC y BCC la caja no se descompone en caminos y su
+    espectro no tiene fórmula cerrada; lo que vale para todas las redes es el límite, la banda.</p>
+
+  <!-- ===================================================================== -->
+  <h2 id="s6"><span class="no">§6</span>El puente: Robertson 1934 para los estados de cristal</h2>
+  <div class="prop">
+    <div class="h">Teorema 6.1 <span>· <code>AlgState.robertson_schrodinger</code>, <code>AlgState.robertson_det</code> · <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1803">#1803</a></span></span></div>
+    <p>Para un estado <i>ω</i> de cualquier <i>⋆</i>-álgebra y observables autoadjuntos <i>a<sub>1</sub>, …, a<sub>n</sub></i>, la matriz <i>Σ + iΩ</i> es semidefinida
+    positiva; por tanto, para todo par y para el conjunto,</p>
+    <div class="eq"><math display="block"><msubsup><mi>Σ</mi><mrow><mi>A</mi><mi>B</mi></mrow><mn>2</mn></msubsup><mo>+</mo><msubsup><mi>Ω</mi><mrow><mi>A</mi><mi>B</mi></mrow><mn>2</mn></msubsup><mo>≤</mo><msub><mi>Σ</mi><mrow><mi>A</mi><mi>A</mi></mrow></msub><msub><mi>Σ</mi><mrow><mi>B</mi><mi>B</mi></mrow></msub><mo>,</mo>
+      <mspace width="1.4em"/><mo>|</mo><mi>det</mi><mspace width=".15em"/><mi>Ω</mi><mo>|</mo><mo>≤</mo><mi>det</mi><mspace width=".15em"/><mi>Σ</mi><mo>.</mo></math><span class="tag">(6.1)</span></div>
+  </div>
+  <div class="prop">
+    <div class="h">Corolario 6.2 <span>· <code>robertson_det_translationInvariantState</code>, <code>covariance_translationInvariantState_eq_zero</code> · <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1803">#1803</a></span></span></div>
+    <p>(6.1) vale en el estado térmico invariante por traslación de una interacción en <i>ℤ<sup>d</sup></i>; una traslación que fija
+    <i>A</i> e invierte <i>B</i> (el antiferromagneto) da <i>Σ<sub>AB</sub> = Ω<sub>AB</sub> = 0</i>.</p>
+  </div>
+  <div class="prop model">
+    <div class="h">Observación 6.3 <span>· dónde está el contenido</span></div>
+    <p>Para <i>(H, X, Y, Z)</i> el determinante <i>det Ω</i> es el cuadrado del pfaffiano
+    <i>Ω<sub>HX</sub>Ω<sub>YZ</sub> − Ω<sub>HY</sub>Ω<sub>XZ</sub> + Ω<sub>HZ</sub>Ω<sub>XY</sub></i>, y las posiciones conmutan, así que
+    <i>det Ω = 0</i>: la cota con determinante es solo la positividad de <i>Σ</i>, el caso trivial. El contenido está en la forma que
+    la simetría impone a <i>Σ</i> y <i>Ω</i> (§3–§4) y en el valor de <i>Ω<sub>HX</sub></i> (§5), que entra en la cota del par
+    <i>(H, X)</i>: <i>Σ<sub>HX</sub><sup>2</sup> + Ω<sub>HX</sub><sup>2</sup> ≤ Σ<sub>HH</sub>Σ<sub>XX</sub></i>, con <i>Σ<sub>HX</sub> = 0</i> en la onda plana.</p>
+  </div>
+
+  <!-- ===================================================================== -->
+  <h2 id="s7"><span class="no">§7</span>Lo que está abierto, dicho sin rodeos</h2>
+  <ol>
+    <li><b>Schur, parte escalar.</b> Se prueba que las covarianzas entre irreducibles inequivalentes se anulan (Teorema 4.3). Para una sola
+      irreducible, que <i>M</i> sea un múltiplo de la identidad, no.</li>
+    <li><b>Estados antiunitarios en el marco de Tom.</b> La forma <i>C<sub>ω</sub></i> cubre <i>⋆</i>-automorfismos lineales. La inversión
+      temporal y la partícula–hueco son antiunitarias y viven en una pieza aparte (<code>Antiunitary.lean</code>, Wigner): matan <i>Σ</i> entre
+      paridades distintas, y no a <i>Ω</i>.</li>
+    <li><b>Cajas finitas de FCC y BCC.</b> No tienen fórmula cerrada; el valor exacto en caja finita es el espectro finito. Lo cerrado es la
+      fórmula (5.1) y el límite (5.2).</li>
+    <li><b>Identificación del grupo.</b> Lean prueba el orden del grupo puntual; el isomorfismo con <i>D<sub>2h</sub></i>, <i>D<sub>4h</sub></i>, etc.
+      es una identificación por orden.</li>
+    <li><b>Estado de la revisión.</b> Las redes y sus grupos, la forma de covarianza con Schur y la desigualdad de Robertson están
+      <b>fusionadas</b> en PhyslibAlpha. La inversión, la onda plana, el grupo pequeño, la fórmula de Ω y su límite, y las formas de <i>M</i>
+      por sistema están en ramas del fork <b>sin PR todavía</b>. Hasta que se fusionen, son ciertas en Lean, no revisadas por el repositorio.</li>
+  </ol>
+
+  <!-- ===================================================================== -->
+  <h2 id="s8"><span class="no">§8</span>Libro de lemas</h2>
+  <div class="tw ledger"><table id="t-ledger">
+<!--LG:begin-->
+<tr><th>enunciado</th><th>Lean</th><th>archivo</th><th>estado</th></tr>
+<tr><td>Bravais general: <code>Crystal.bravais d</code>, <code>Embedding.ofVectors</code>, llena el espacio ⇔ los vectores lo generan</td><td><code>isSpaceFilling_ofVectors_iff, position_ofVectors</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/Physlib/CondensedMatter/Crystal/Bravais/Basic.lean">Basic.lean</a></td><td><span class="chip phys"><a href="https://github.com/leanprover-community/physlib/pull/1961">Physlib #1961</a></span></td></tr>
+<tr><td>Las catorce redes: grafo, vecinos y orden del grupo puntual</td><td><code><code>*_neighbors_card</code>, <code>*_card_pointGroup</code> (§2)</code></td><td><a href="https://github.com/leanprover-community/physlib/tree/master/PhyslibAlpha/CondensedMatter/Crystal/PointGroup/">PhyslibAlpha/CondensedMatter/Crystal/PointGroup/</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1798">PhyslibAlpha #1798</a></span> <span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1802">PhyslibAlpha #1802</a></span> <span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1823">PhyslibAlpha #1823</a></span> <span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1825">PhyslibAlpha #1825</a></span></td></tr>
+<tr><td>Grupos puntuales de cristales con varios sitios por celda (subredes)</td><td><code><code>pointGroupMulEquivOfLift</code>, <code>linear_mem_bondDifferences_iff</code></code></td><td><a href="https://github.com/leanprover-community/physlib/tree/master/PhyslibAlpha/CondensedMatter/Crystal/PointGroup/">PhyslibAlpha/CondensedMatter/Crystal/PointGroup/</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1826">PhyslibAlpha #1826</a></span></td></tr>
+<tr><td>Diamante (orden 48) y panal (orden 12)</td><td><code>diamond_card_pointGroup, honeycomb_card_pointGroup</code></td><td><a href="https://github.com/naype888-cloud/physlib/blob/feat-physlibalpha-crystal-diamond-honeycomb/PhyslibAlpha/CondensedMatter/Crystal/PointGroup/DiamondHoneycomb.lean">DiamondHoneycomb.lean</a></td><td><span class="chip fork"><a href="https://github.com/naype888-cloud/physlib/tree/feat-physlibalpha-crystal-diamond-honeycomb">rama del fork</a></span></td></tr>
+<tr><td>Toda red con un sitio por celda es centrosimétrica</td><td><code>PeriodicGraph.inversion_mem_symmetries</code></td><td><a href="https://github.com/naype888-cloud/physlib/blob/mosaic-cristales/PhyslibAlpha/CondensedMatter/Crystal/Inversion.lean">Inversion.lean</a></td><td><span class="chip fork"><a href="https://github.com/naype888-cloud/physlib/tree/mosaic-cristales">rama del fork</a></span></td></tr>
+<tr><td>Inversión por inversión temporal: <i>f H f = H</i>, <i>f X f = −X</i></td><td><code>inversionReversal_hopping, inversionReversal_position</code></td><td><a href="https://github.com/naype888-cloud/physlib/blob/mosaic-cristales/PhyslibAlpha/CondensedMatter/Crystal/Inversion.lean">Inversion.lean</a></td><td><span class="chip fork"><a href="https://github.com/naype888-cloud/physlib/tree/mosaic-cristales">rama del fork</a></span></td></tr>
+<tr><td>En toda onda plana, Σ<sub>HX</sub> = 0 en todas las direcciones</td><td><code>covariance_hopping_position_unitPlaneWave</code></td><td><a href="https://github.com/naype888-cloud/physlib/blob/mosaic-cristales/PhyslibAlpha/CondensedMatter/Crystal/Inversion.lean">Inversion.lean</a></td><td><span class="chip fork"><a href="https://github.com/naype888-cloud/physlib/tree/mosaic-cristales">rama del fork</a></span></td></tr>
+<tr><td>Estado simétrico ⇒ Σ<sub>AB</sub> = Ω<sub>AB</sub> = 0; con inversión temporal, Σ entre paridades, Ω dentro de una</td><td><code>covariance_eq_zero_of_symm, expectation_bracket_eq_zero_of_symm, …_of_reverse</code></td><td><a href="https://github.com/naype888-cloud/physlib/blob/mosaic-cristales/PhyslibAlpha/ProbabilisticTheory/CStarAlgebra/SymmetricState.lean">SymmetricState.lean</a></td><td><span class="chip fork"><a href="https://github.com/naype888-cloud/physlib/tree/mosaic-cristales">rama del fork</a></span></td></tr>
+<tr><td>Antiunitario <i>f∘f = id</i> que fija el estado: par e impar sin correlación</td><td><code>covariance_ofVec_eq_zero_of_antiunitary</code></td><td><a href="https://github.com/naype888-cloud/physlib/blob/mosaic-cristales/PhyslibAlpha/ProbabilisticTheory/HilbertSpace/State/Antiunitary.lean">Antiunitary.lean</a></td><td><span class="chip fork"><a href="https://github.com/naype888-cloud/physlib/tree/mosaic-cristales">rama del fork</a></span></td></tr>
+<tr><td>Grupo pequeño de <i>k</i>: ceros, esquinas de la zona e invariancia de Ω</td><td><code>covariance_hopping_position_littleGroup, expectation_bracket_hopping_position_of_neg, …_comp_littleGroup</code></td><td><a href="https://github.com/naype888-cloud/physlib/blob/mosaic-cristales/PhyslibAlpha/CondensedMatter/Crystal/LittleGroup.lean">LittleGroup.lean</a></td><td><span class="chip fork"><a href="https://github.com/naype888-cloud/physlib/tree/mosaic-cristales">rama del fork</a></span></td></tr>
+<tr><td>Red cuadrada, <i>k</i> en la diagonal: Ω<sub>HX</sub> = Ω<sub>HY</sub></td><td><code>NRS3Cristales.omega_diagonal</code></td><td><a href="https://github.com/naype888-cloud/nrs3-cristales/blob/main/NRS3Cristales/Diagonal.lean">Diagonal.lean</a></td><td><span class="chip pr">este repo</span></td></tr>
+<tr><td>Forma de covarianza, positividad, <i>R<sup>H</sup> M R = M</i>, Schur</td><td><code>covarianceForm, posSemidef_covarianceMatrixForm, covarianceMatrixForm_eq_zero_of_irreducible</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/ProbabilisticTheory/StarAlgebra/CovarianceForm.lean">CovarianceForm.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1822">PhyslibAlpha #1822</a></span></td></tr>
+<tr><td>Forma de <i>M</i> por sistema cristalino</td><td><code>covarianceMatrixForm_monoclinic / _orthorhombic / _rhombohedral / _cubic / _rotation</code></td><td><a href="https://github.com/naype888-cloud/physlib/blob/feat-physlibalpha-crystal-covariance-shape/PhyslibAlpha/CondensedMatter/Crystal/CovarianceShape.lean">CovarianceShape.lean</a></td><td><span class="chip fork"><a href="https://github.com/naype888-cloud/physlib/tree/feat-physlibalpha-crystal-covariance-shape">rama del fork</a></span></td></tr>
+<tr><td>Ω exacta de la onda plana, la banda y el límite −½ ∂ε</td><td><code>expectation_bracket_unitPlaneWave, band, hasDerivAt_band, tendsto_expectation_bracket_box</code></td><td><a href="https://github.com/naype888-cloud/physlib/blob/mosaic-cristales/PhyslibAlpha/CondensedMatter/Crystal/GroupVelocity.lean">GroupVelocity.lean</a></td><td><span class="chip fork"><a href="https://github.com/naype888-cloud/physlib/tree/mosaic-cristales">rama del fork</a></span></td></tr>
+<tr><td>Ehrenfest y deriva en cajas grandes</td><td><code>hasDerivAt_expectation_heisenberg, tendsto_drift_box</code></td><td><a href="https://github.com/naype888-cloud/physlib/blob/mosaic-cristales/PhyslibAlpha/ProbabilisticTheory/HilbertSpace/Dynamics/Ehrenfest.lean">Ehrenfest.lean</a></td><td><span class="chip fork"><a href="https://github.com/naype888-cloud/physlib/tree/mosaic-cristales">rama del fork</a></span></td></tr>
+<tr><td>Robertson–Schrödinger y |det Ω| ≤ det Σ para estados de <i>⋆</i>-álgebras</td><td><code>AlgState.robertson_schrodinger, AlgState.robertson_det</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/ProbabilisticTheory/StarAlgebra/StateUncertainty.lean">StateUncertainty.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1803">PhyslibAlpha #1803</a></span></td></tr>
+<tr><td>Estado térmico invariante por traslación; traslación que fija <i>A</i> e invierte <i>B</i></td><td><code>robertson_det_translationInvariantState, covariance_translationInvariantState_eq_zero</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/Crystal/InvariantStateUncertainty.lean">InvariantStateUncertainty.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1803">PhyslibAlpha #1803</a></span></td></tr>
+<tr><td>Cadena: cov(H, X) = 0 en el estado de corriente máxima (la prueba por simetría partícula–hueco está en la rama del fork)</td><td><code>TightBindingChain.covariance_maxCurrentState</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/TightBindingChain/MaxCurrentState/UncertaintyRatio.lean">UncertaintyRatio.lean</a></td><td><span class="chip alpha">PhyslibAlpha</span></td></tr>
+<tr><td>FCC y BCC como palabras de pasos de eje; complemento de Schur; tensión nula en la parte par</td><td><code>det_sub_bipartita, schur_bipartita, palabras2_diagonalCara, palabras3_cuerpo, tension_parteFCC_eq_zero</code></td><td><a href="https://github.com/naype888-cloud/nrs3-cristales/blob/main/NRS3Cristales/Schur.lean · SchurCubo.lean">Schur.lean · SchurCubo.lean</a></td><td><span class="chip pr">este repo</span></td></tr>
+<tr><td><i>C<sub>Nava</sub></i>(N): forma cerrada de <i>C²</i>, igual a 1 solo para N = 2, 3 (<i>θ<sub>NRS</sub>(d) = 0 ⇔ d ∈ {2, 3}</i>)</td><td><code>CNava_sq_eq</code></td><td>NRS y NRS³ en PhyslibAlpha</td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1723">PhyslibAlpha #1723</a></span> <span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1725">PhyslibAlpha #1725</a></span></td></tr>
+<tr><td>Monotonía estricta de <i>C²</i> desde N = 5 (cotas de Taylor y polinomios de Bernstein)</td><td><code>uncertaintyRatioSqForm_strictMonoOn</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/TightBindingChain/MaxCurrentState/LongChainMonotonicity.lean">LongChainMonotonicity.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1735">PhyslibAlpha #1735</a></span></td></tr>
+<tr><td>Límite <i>C → C<sub>∞</sub> = √(π²/3 − 2)</i> (Szegő), sin alcanzarlo</td><td><code>tendsto_uncertaintyRatioSqForm</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/TightBindingChain/MaxCurrentState/LongChainLimit.lean">LongChainLimit.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1734">PhyslibAlpha #1734</a></span></td></tr>
+<!--LG:end-->
+  </table></div>
+
+  <!-- ===================================================================== -->
+  <h2 id="s9"><span class="no">§9</span>Reproducir</h2>
+  <pre class="cmd">git clone https://github.com/naype888-cloud/nrs3-cristales
+cd nrs3-cristales
+lake build                          # NRS3Cristales: Diagonal, Schur, SchurCubo, Resumen
+lake env lean Verification/Axioms.lean   # solo propext, Classical.choice, Quot.sound
+node tools/check_core.js            # las 14 redes: Σ_HX = 0, Ω = fórmula (5.1), Robertson, límite (5.2)</pre>
+  <p class="ref"><code>lakefile.toml</code> fija Physlib en el commit <code>6aa4163f</code> de la rama <code>mosaic-cristales</code> del fork, que contiene
+    la inversión, el grupo pequeño y la velocidad de grupo. Ese commit es anterior a la fusión de la romboédrica, las monoclínicas y la
+    triclínica en PhyslibAlpha (#1823, #1825); sus enunciados están en <code>origin/master</code> de Physlib y en las ramas listadas en el libro.
+    <code>tools/check_core.js</code> verifica el modelo numérico de esta página contra las fórmulas de los lemas a precisión de máquina.</p>
+
+  <h3>Línea de tiempo</h3>
+  <ul class="ref">
+    <li><b>1848</b> Bravais, la clasificación de las redes · <b>1915–20</b> Szegő, los teoremas límite de las matrices de Toeplitz (el límite de la banda) ·
+      <b>1928</b> Bloch, las ondas de Bloch · <b>1929–30</b> Robertson y Schrödinger · <b>1930</b> Brillouin, la zona de Brillouin ·
+      <b>1931–32</b> Wigner, la teoría de grupos y la inversión temporal antiunitaria · <b>1934</b> Robertson, el determinante ·
+      <b>1936</b> Bouckaert, Smoluchowski y Wigner, la simetría de las bandas y el grupo pequeño de cada <i>k</i> · <b>1917</b> Schur, el complemento de Schur (1917).</li>
+  </ul>
+
+  <div class="pager"><a href="../didactic/">← Versión didáctica</a><a href="../lab/">Laboratorio →</a></div>
+  <footer>NRS³ · Cristales · Eduardo Nava-Hernandez · NRS Noncommercial License 1.0.0 · <a href="https://github.com/naype888-cloud/nrs3-cristales">código</a></footer>
+</main>
+<script src="../shared/js/cristales-core.js?v=20261027"></script>
+<script src="../shared/js/figures.js?v=20261027"></script>
+<script src="formal.js?v=20261027"></script>
+</body>
+</html>

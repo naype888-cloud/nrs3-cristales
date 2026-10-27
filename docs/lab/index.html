@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laboratorio — NRS³ · Cristales</title>
+<meta name="description" content="El instrumento completo: las 14 redes de Bravais con todos sus parámetros, el estado, las matrices Σ y Ω, la banda, la caja que converge y el cubo de N sitios con C_Nava(N).">
+<link rel="icon" href="../media/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NRS³ · Cristales">
+<meta property="og:title" content="NRS³ · Cristales — laboratorio">
+<meta property="og:description" content="14 redes, todos los parámetros, Σ y Ω, la banda y el cubo de N sitios.">
+<meta property="og:url" content="https://naype888-cloud.github.io/nrs3-cristales/lab/">
+<meta property="og:image" content="https://naype888-cloud.github.io/nrs3-cristales/media/og.png">
+<script src="../shared/js/theme.js?v=20261027" data-toggle></script>
+<link rel="stylesheet" href="../shared/css/page.css?v=20261027">
+<link rel="stylesheet" href="../shared/css/crystal.css?v=20261027">
+</head>
+<body>
+<main class="wide">
+  <nav class="navbar" aria-label="Sitio">
+    <a class="brand" href="../">NRS³ · Cristales<span class="sect"> · Laboratorio</span></a>
+    <a class="pill" href="../didactic/">Didáctica</a>
+    <a class="pill" href="../formal/">Formal</a>
+    <a class="pill" href="./" aria-current="page">Laboratorio</a>
+    <button class="pill" id="theme" type="button">☀ Claro</button>
+  </nav>
+  <p class="series">Laboratorio · modelo numérico con las definiciones de Lean</p>
+  <h1>El instrumento completo</h1>
+  <p class="lead">Elige una de las catorce redes, cambia sus longitudes y el momento <i>k</i>, y compara el estado simétrico con uno que rompe la simetría.
+    Los órdenes de grupo y los enlaces son los de Lean; las matrices y las bandas son un <span class="chip model">modelo</span> que coincide con la
+    fórmula del lema a precisión de máquina.</p>
+
+  <div class="lab">
+    <aside class="side" aria-label="Controles">
+      <h3>Red</h3>
+      <select id="lat" aria-label="Elegir red"></select>
+      <div class="bar"><button class="pill" id="rand" type="button">Al azar</button><button class="pill" id="tour" type="button" aria-pressed="false">Recorrido</button></div>
+      <div id="lens"></div>
+      <div class="alert" id="alert" role="status" hidden></div>
+      <h3>Momento k (κ · π / ℓ)</h3>
+      <label class="slide"><span>κ<sub>x</sub></span><input type="range" id="kx" min="-1" max="1" step="0.01" value="0.37"><output id="vkx"></output></label>
+      <label class="slide"><span>κ<sub>y</sub></span><input type="range" id="ky" min="-1" max="1" step="0.01" value="-0.52"><output id="vky"></output></label>
+      <label class="slide"><span>κ<sub>z</sub></span><input type="range" id="kz" min="-1" max="1" step="0.01" value="0.61"><output id="vkz"></output></label>
+      <h3>Región y salto</h3>
+      <label class="slide"><span>L</span><input type="range" id="L" min="1" max="3" step="1" value="2"><output id="vL"></output></label>
+      <label class="slide"><span>t</span><input type="range" id="t" min="0.2" max="2" step="0.05" value="1"><output id="vt"></output></label>
+      <h3>Estado</h3>
+      <div class="bar"><button class="pill" id="onda" type="button" aria-pressed="true">Onda plana</button><button class="pill" id="alea" type="button" aria-pressed="false">Al azar</button></div>
+      <p class="ref" id="meta"></p>
+    </aside>
+
+    <div class="main-col">
+      <div class="badges" id="badges" aria-live="polite"></div>
+      <div class="two">
+        <div class="card"><div class="head"><h3>La red y el estado</h3><span class="src">color = fase · naranja = enlaces</span></div><canvas class="cv sq" id="red" aria-label="La red con la fase del estado"></canvas></div>
+        <div class="card"><div class="head"><h3>Σ y Ω</h3><span class="src">verde = cero forzado</span></div><canvas class="cv mats" id="mats" aria-label="Matrices Σ y Ω"></canvas>
+          <p class="legend"><span><i class="sw" style="background:var(--blue)"></i>Σ</span><span><i class="sw" style="background:var(--orange)"></i>Ω</span><span><i class="sw" style="background:var(--green)"></i>cero forzado</span></p></div>
+      </div>
+      <div class="two">
+        <div class="card"><div class="head"><h3>Banda ε(k)</h3><span class="src">pendiente = velocidad de grupo</span></div><canvas class="cv band" id="banda" aria-label="La banda"></canvas></div>
+        <div class="card"><div class="head"><h3>Ω de la caja → −½ v</h3><span class="src">onda plana, L = 1 … 12</span></div><canvas class="cv band" id="conv" aria-label="Convergencia de Ω"></canvas></div>
+      </div>
+      <div class="card"><div class="head"><h3>Robertson–Schrödinger por pares</h3><span class="src">Cov² + Ω² ≤ Var H · Var X</span></div><div class="bars" id="bars"></div></div>
+      <div class="card"><div class="head"><h3>El cubo de N sitios · C<sub>Nava</sub>(N)</h3><span class="src">satura solo en N = 2, 3 · estricto &gt; 1 desde N = 4 · &lt; C<sub>∞</sub></span></div>
+        <div class="two">
+          <canvas class="cv sq" id="cubo" aria-label="El cubo abierto"></canvas>
+          <div>
+            <canvas class="cv band" id="cn" aria-label="C de Nava contra N"></canvas>
+            <label class="slide"><span>N<sub>x</sub></span><input type="range" id="nx" min="2" max="60" step="1" value="4"><output id="vnx"></output></label>
+            <label class="slide"><span>N<sub>y</sub></span><input type="range" id="ny" min="2" max="60" step="1" value="3"><output id="vny"></output></label>
+            <label class="slide"><span>N<sub>z</sub></span><input type="range" id="nz" min="2" max="60" step="1" value="9"><output id="vnz"></output></label>
+            <p class="readout" id="rc" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+      <p class="ref">Cada enunciado con su nombre en Lean está en la <a href="../formal/#s8">nota formal, §8</a>. Para recorrerlo con calma, la <a href="../didactic/">versión didáctica</a>.</p>
+    </div>
+  </div>
+  <footer>NRS³ · Cristales · Eduardo Nava-Hernandez · <a href="https://github.com/naype888-cloud/nrs3-cristales">código</a></footer>
+</main>
+<script src="../shared/js/cristales-core.js?v=20261027"></script>
+<script src="../shared/js/figures.js?v=20261027"></script>
+<script src="lab.js?v=20261027"></script>
+</body>
+</html>
