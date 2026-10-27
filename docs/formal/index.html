@@ -233,8 +233,10 @@
     En <b>FCC</b> (<i>P</i> = suma par), <i>H<sub>PP</sub> = H<sub>QQ</sub> = 0</i> y el complemento es exacto: <i>H<sub>PQ</sub>H<sub>QP</sub>/E</i>, cuyas entradas
     cuentan palabras de dos pasos de eje: 6 de regreso, 2 a cada <i>±e<sub>i</sub> ± e<sub>j</sub></i>, 1 a cada <i>±2e<sub>i</sub></i>
     (<i>6 + 12·2 + 6·1 = 36 = 6<sup>2</sup></i>, <code>suma_palabras2</code>). En <b>BCC</b> la diagonal de cuerpo <i>(1,1,1)</i> no se alcanza en dos
-    pasos (<code>palabras2_cuerpo = 0</code>) y se alcanza en tres por 6 palabras (<code>palabras3_cuerpo</code>). Ningún vecino diagonal
-    es un enlace primitivo: todos son palabras del único movimiento elemental, el paso de eje. Además, con transporte real y
+    pasos (<code>palabras2_cuerpo = 0</code>) y se alcanza en tres por 6 palabras (<code>palabras3_cuerpo</code>). Los ejes conmutan, así que <i>x</i> y luego <i>y</i> llega al mismo sitio que <i>y</i> y luego <i>x</i>: por eso la diagonal de cara
+    tiene exactamente 2 palabras, una por orden, y está bien definida. La diagonal es la única palabra en la que dos ejes aparecen en el mismo
+    enunciado (entre ellos <i>Ω = 0</i>, y la cota es la positividad de Gram). No es un enlace primitivo con operador propio: es una composición
+    del único movimiento elemental, el paso de eje. Además, con transporte real y
     amplitudes reales la tensión es 0 (<code>tension_eq_zero_of_real</code>), y la parte par del estado de corriente máxima del cubo
     no carga tensión (<code>tension_parteFCC_eq_zero</code>).</p>
   </div>
