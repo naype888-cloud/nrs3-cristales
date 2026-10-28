@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reviewer's guide — NRS³ · Cristales</title>
+<meta name="description" content="A guide to review the Physlib pull requests on axis-step words and commutation in the cube: the nearest neighbours of fcc and bcc, and when two observables of the cube commute.">
+<link rel="icon" href="../media/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="NRS³ · Cristales">
+<meta property="og:title" content="Axis-step words and commutation in the cube: a reviewer's guide">
+<meta property="og:description" content="Physlib PRs #1986 and #1987: the nearest neighbours of fcc and bcc are words of axis steps, and two observables of the cube commute if and only if they lie on different axes.">
+<meta property="og:url" content="https://naype888-cloud.github.io/nrs3-cristales/en/">
+<meta property="og:image" content="https://naype888-cloud.github.io/nrs3-cristales/media/og.png">
+<script src="../shared/js/theme.js?v=20261027" data-toggle></script>
+<link rel="stylesheet" href="../shared/css/page.css?v=20261027">
+<link rel="stylesheet" href="../shared/css/crystal.css?v=20261027">
+<style>
+  main.formal { max-width: 1040px; }
+  td code, th code { font-size: .8em; overflow-wrap: anywhere; }
+  .tw table td { vertical-align: top; }
+  td.vec { font: 11.5px/1.45 var(--mono); color: var(--ink2); }
+  .ref { font-size: .86rem; color: var(--ink2); }
+  .ref li { margin: 3px 0; }
+  pre.cmd { background: var(--panel); border: 1px solid var(--grid); border-radius: 10px; padding: 10px 14px; overflow-x: auto; font: 12.5px/1.6 var(--mono); }
+  figure.fig { margin: 14px 0; }
+  figure.fig svg { width: 100%; height: auto; border: 1px solid var(--grid); border-radius: 12px; }
+</style>
+</head>
+<body>
+<main class="formal">
+  <nav class="navbar" aria-label="Site">
+    <a class="brand" href="../">NRS³ · Cristales<span class="sect"> · Reviewer's guide</span></a>
+    <a class="pill" href="../didactic/">Didáctica (es)</a>
+    <a class="pill" href="../formal/">Formal (es)</a>
+    <a class="pill" href="../lab/">Lab</a>
+    <button class="pill" id="theme" type="button">☀ Light</button>
+  </nav>
+
+  <p class="series">NRS³ Cristales · Reviewer's guide · Lean 4 on Physlib</p>
+  <h1>Axis-step words and commutation in the cube</h1>
+  <div class="rule" aria-hidden="true"></div>
+
+  <section class="abstract" aria-label="Summary">
+    <span class="k">Summary</span>
+    <p>The nearest-neighbour lists <code>fccBonds</code> and <code>bccBonds</code> are written by hand, in the basis of
+    primitive vectors. Can they be derived from the geometry of the cube, one step at a time? Two pull requests answer.
+    <a href="https://github.com/leanprover-community/physlib/pull/1987">#1987</a>: in the coordinates of the box, the bonds
+    of fcc and bcc, with both signs, are exactly the sums of two (fcc) or three (bcc) steps along different axes, and each
+    neighbour is reached by exactly <b>2</b> (fcc) or <b>6</b> (bcc) ordered words.
+    <a href="https://github.com/leanprover-community/physlib/pull/1986">#1986</a>: two distinct observables of the cube commute
+    <b>if and only if</b> they lie on different axes. The Hamiltonian and the position of one axis do not commute, and the
+    hypotheses of that statement cannot be dropped.</p>
+  </section>
+
+  <h2>1. The idea</h2>
+  <p>Two observables <i>A, B</i> can be of two kinds, and each has its first step.</p>
+  <ul>
+    <li><b>They commute</b> (<i>AB = BA</i>): the order of the steps does not matter. A diagonal is the sum of two steps along
+      different axes. There are two words, <i>x</i> then <i>y</i> and <i>y</i> then <i>x</i>, and one displacement.</li>
+    <li><b>They do not commute</b> (<i>AB ≠ BA</i>): this is the pair <i>(H, X)</i> of a single axis. Its commutator has a
+      nonzero expectation, and by Robertson's relation the product of the variances is positive. This is where the
+      uncertainty and the spectrum live.</li>
+  </ul>
+  <figure class="fig">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 280" role="img" aria-label="Right triangle: the legs A and B are axis steps that commute; the hypotenuse is their composition">
+  <rect width="680" height="280" fill="#fcfcfb"/>
+  <g font-family="ui-monospace,Menlo,Consolas,monospace" font-size="14" fill="#0b0b0b">
+  <path d="M80 220 V90 H250" stroke="#8a8985" stroke-width="1.5" stroke-dasharray="5 4" fill="none"/>
+  <path d="M80 220 H250 V90" stroke="#2a78d6" stroke-width="3" fill="none"/>
+  <path d="M80 220 L250 90" stroke="#eb6834" stroke-width="3"/>
+  <circle cx="80" cy="220" r="5" fill="#0b0b0b"/><circle cx="250" cy="220" r="4" fill="#2a78d6"/>
+  <circle cx="250" cy="90" r="5" fill="#eb6834"/><circle cx="80" cy="90" r="4" fill="#8a8985"/>
+  <text x="80" y="246" text-anchor="middle">(0,0,0)</text>
+  <text x="165" y="246" text-anchor="middle" fill="#2a78d6">step along x</text>
+  <text x="262" y="160" fill="#2a78d6">step along y</text>
+  <text x="250" y="74" text-anchor="middle">(1,1,0)</text>
+  <text x="140" y="140" fill="#eb6834" transform="rotate(-37.4 140 140)" text-anchor="middle">face diagonal</text>
+  <text x="380" y="100" font-size="15">x · y = y · x</text>
+  <text x="380" y="122" fill="#67665f">two words, one displacement</text>
+  <text x="380" y="160" font-size="15">[H, X] ≠ 0 on one axis</text>
+  <text x="380" y="182" fill="#67665f">two orders, two different operators</text>
+  </g></svg>
+  <figcaption class="ref">Dashed: the other order of the same two steps. The picture is in the plane of two axes of the cube.</figcaption>
+  </figure>
+
+  <h2>2. The pull requests</h2>
+  <div class="tw"><table>
+  <tr><th>PR</th><th>Lean name</th><th>Statement</th><th>File</th></tr>
+  <tr><td><a href="https://github.com/leanprover-community/physlib/pull/1987">#1987</a></td>
+    <td><code>fccBonds_eq_twoStepWords</code></td>
+    <td>The 6 bonds of <code>fccBonds</code>, with both signs, are exactly the 12 sums of two steps along different axes.</td>
+    <td rowspan="6"><code>PhyslibAlpha/CondensedMatter/Crystal/Examples/AxisStepWords.lean</code></td></tr>
+  <tr><td></td><td><code>bccBonds_eq_threeStepWords</code></td>
+    <td>The 4 bonds of <code>bccBonds</code>, with both signs, are exactly the 8 sums of three steps, one per axis.</td></tr>
+  <tr><td></td><td><code>card_twoStepWords_fiber</code></td><td>Each fcc neighbour is reached by exactly 2 ordered words.</td></tr>
+  <tr><td></td><td><code>card_threeStepWords_fiber</code></td><td>Each bcc neighbour is reached by exactly 6 ordered words.</td></tr>
+  <tr><td></td><td><code>twoStepSum_swap</code></td><td>The two orders of a word of two steps give the same displacement.</td></tr>
+  <tr><td></td><td><code>latticeMap_fccVectors</code>, <code>latticeMap_bccVectors</code></td>
+    <td>The physical position of a cell is <code>(side / 2) · fccCoord</code> (resp. <code>bccCoord</code>) on each axis: this ties the lists to the geometry.</td></tr>
+  <tr><td><a href="https://github.com/leanprover-community/physlib/pull/1986">#1986</a></td>
+    <td><code>bracket_cubePairs_eq_zero_iff</code></td>
+    <td>Two distinct observables of the cube commute if and only if they lie on different axes.</td>
+    <td rowspan="5"><code>PhyslibAlpha/CondensedMatter/TightBindingChain/Cube/AxisCommutation.lean</code></td></tr>
+  <tr><td></td><td><code>bracket_cubePairs_pair_ne_zero</code></td><td>The Hamiltonian and the position of one axis do not commute.</td></tr>
+  <tr><td></td><td><code>variance_mul_variance_cubePairs_pos</code></td><td>In the maximal current state, <i>Var H · Var X &gt; 0</i> on each axis.</td></tr>
+  <tr><td></td><td><code>axisBracket_maxCurrentCubeVectorState_ne_zero</code></td><td>In that state, the expectation of <i>⁅H, X⁆</i> is nonzero on each axis.</td></tr>
+  <tr><td></td><td><code>bracket_openHamiltonian_position_eq_zero_iff</code></td>
+    <td>On one chain, <i>⁅H, X⁆ = 0</i> if and only if <i>t = 0</i> or <i>N &lt; 2</i>: the hypotheses <i>t ≠ 0</i>, <i>N ≥ 2</i> are exactly the necessary ones.</td></tr>
+  <tr><td>already in Physlib</td><td><code>bracket_cubePairs_of_ne</code></td><td>Observables of different axes commute (the "if" half of #1986).</td>
+    <td><code>…/TightBindingChain/Cube/Basic.lean</code> (merged)</td></tr>
+  <tr><td><a href="https://github.com/leanprover-community/physlib/pull/1972">#1972</a>, <a href="https://github.com/leanprover-community/physlib/pull/1985">#1985</a></td>
+    <td>bond lengths, hypercubic, triangular, hexagonal</td><td>Geometry of the bonds, context for the Bravais series. They do not contain the argument above.</td><td><code>Physlib/CondensedMatter/Crystal/</code></td></tr>
+  </table></div>
+
+  <h2>3. A worked example</h2>
+  <p>The bonds are written in the basis of primitive vectors. In the box, in units of half a side (<code>fccCoord</code>,
+  <code>bccCoord</code>), each one is a word of axis steps.</p>
+  <div class="tw"><table>
+  <tr><th>lattice</th><th>bond in the primitive basis</th><th>box coordinates</th><th>word of steps</th></tr>
+  <tr><td>fcc</td><td class="vec">![1, 0, 0]</td><td class="vec">(0, 1, 1)</td><td><i>e₂ + e₃</i></td></tr>
+  <tr><td>fcc</td><td class="vec">![0, 1, 0]</td><td class="vec">(1, 0, 1)</td><td><i>e₁ + e₃</i></td></tr>
+  <tr><td>fcc</td><td class="vec">![0, 0, 1]</td><td class="vec">(1, 1, 0)</td><td><i>e₁ + e₂</i></td></tr>
+  <tr><td>fcc</td><td class="vec">![1, −1, 0]</td><td class="vec">(−1, 1, 0)</td><td><i>−e₁ + e₂</i></td></tr>
+  <tr><td>fcc</td><td class="vec">![0, 1, −1]</td><td class="vec">(0, −1, 1)</td><td><i>−e₂ + e₃</i></td></tr>
+  <tr><td>fcc</td><td class="vec">![−1, 0, 1]</td><td class="vec">(1, 0, −1)</td><td><i>e₁ − e₃</i></td></tr>
+  <tr><td>bcc</td><td class="vec">![1, 0, 0]</td><td class="vec">(−1, 1, 1)</td><td><i>−e₁ + e₂ + e₃</i></td></tr>
+  <tr><td>bcc</td><td class="vec">![0, 1, 0]</td><td class="vec">(1, −1, 1)</td><td><i>e₁ − e₂ + e₃</i></td></tr>
+  <tr><td>bcc</td><td class="vec">![0, 0, 1]</td><td class="vec">(1, 1, −1)</td><td><i>e₁ + e₂ − e₃</i></td></tr>
+  <tr><td>bcc</td><td class="vec">![1, 1, 1]</td><td class="vec">(1, 1, 1)</td><td><i>e₁ + e₂ + e₃</i></td></tr>
+  </table></div>
+  <p class="ref">With the opposite signs these are the 12 and the 8 neighbours. As ordered words there are 24 and 48 (<i>12 · 2</i>,
+  <i>8 · 3!</i>). The box has sides <i>a, b, c</i>; the half side is <i>a/2, b/2, c/2</i> on each axis.</p>
+
+  <h2>4. What is proved and what is not</h2>
+  <div class="prop def">
+    <div class="h">Proved in Lean <span>· standard axioms only, no <code>sorry</code></span></div>
+    <p>Everything in the table of §2. The two orders of a word and the counts 2 and 6 are decided over finite sets. The
+    commutation statements use the Robertson relation already in Physlib.</p>
+  </div>
+  <div class="prop model">
+    <div class="h">Not claimed</div>
+    <p>These statements do not say that a Hamiltonian cannot have a diagonal hopping with an operator of its own. They say that
+    the nearest-neighbour bonds of fcc and bcc <em>are</em> words of axis steps, and that steps on different axes commute. The
+    <i>45°</i> of a diagonal is a length statement (<i>1 &lt; √2 &lt; √3</i>, corpus <code>D4</code>), not an angle between fluctuations.
+    The body diagonal as a single operator <i>T<sub>x</sub>T<sub>y</sub>T<sub>z</sub></i> is not in Lean; only the displacement and the count of 6 words are.
+    The nonzero-commutator statements are for the six observables <i>(H, X)</i> of the cube, not for an arbitrary pair of the lattice.</p>
+  </div>
+
+  <h2>5. Reproduce</h2>
+  <pre class="cmd"># Physlib: check out the branch of each PR
+lake build PhyslibAlpha.CondensedMatter.Crystal.Examples.AxisStepWords           # #1987
+lake build PhyslibAlpha.CondensedMatter.TightBindingChain.Cube.AxisCommutation   # #1986
+
+# this repository: the general statement that explains the "one word or two" (Mathlib only)
+git clone https://github.com/naype888-cloud/nrs3-cristales
+cd nrs3-cristales
+lake build NRS3Cristales      # Palabras.lean, PalabrasCubo.lean</pre>
+  <p class="ref"><code>NRS3Cristales/Palabras.lean</code> proves, for two operators on a complex inner-product space,
+    <code>commute_iff_forall_commutator</code> (they commute iff <i>⟨[A, B]⟩ = 0</i> in every state) and
+    <code>not_commute_iff_exists_unit</code> (they do not commute iff a unit state has <i>⟨[A, B]⟩ ≠ 0</i>), with the elementary
+    bound <code>commutator_sq_le</code>. It is not part of the pull requests: the cube needs only what #1986 contains.
+    <code>NRS3Cristales/PalabrasCubo.lean</code> is the same cube statement written against this repository's Physlib pin.</p>
+
+  <div class="pager"><a href="../formal/">← Formal note (es)</a><a href="../">Home →</a></div>
+  <footer>NRS³ · Cristales · Eduardo Nava-Hernandez · NRS Noncommercial License 1.0.0 · <a href="https://github.com/naype888-cloud/nrs3-cristales">code</a></footer>
+</main>
+</body>
+</html>
