@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Versión didáctica — NRS³ · Cristales</title>
+<title>Versión didáctica — RS^N³ · Cristales</title>
 <meta name="description" content="Del cristal a la incertidumbre en ocho pasos: una red, sus vecinos, su simetría, un estado, las matrices Σ y Ω, la banda y la cota de Robertson y el cubo de N sitios. Con figuras que se mueven.">
 <link rel="icon" href="../media/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
-<meta property="og:site_name" content="NRS³ · Cristales">
+<meta property="og:site_name" content="RS^N³ · Cristales">
 <meta property="og:title" content="Del cristal a la incertidumbre, en ocho pasos">
 <meta property="og:description" content="La simetría de la red pone ceros donde debe; el espectro da el tamaño de lo que queda.">
 <meta property="og:url" content="https://naype888-cloud.github.io/nrs3-cristales/didactic/">
@@ -19,7 +19,7 @@
 <body>
 <main class="wide">
   <nav class="navbar" aria-label="Sitio">
-    <a class="brand" href="../">NRS³ · Cristales<span class="sect"> · Didáctica</span></a>
+    <a class="brand" href="../">RS^N³ · Cristales<span class="sect"> · Didáctica</span></a>
     <a class="pill" href="./" aria-current="page">Didáctica</a>
     <a class="pill" href="../formal/">Formal</a>
     <a class="pill" href="../lab/">Laboratorio</a>
@@ -191,11 +191,11 @@
       <h2><span class="no">8</span>El cubo de N sitios: cuándo satura y cuándo no</h2>
       <p>Hasta aquí la región era una caja de la red. Ahora tomamos el <b>cubo abierto</b> de <i>N<sub>x</sub> × N<sub>y</sub> × N<sub>z</sub></i> sitios:
         cada eje es un camino de <i>N</i> sitios, y los tres ejes conmutan. Cada eje tiene su constante
-        <code>C<sub>Nava</sub>(N)</code>: el cociente entre lo que el estado de corriente máxima usa y lo que Robertson permite.</p>
+        <code>C<sub>N</sub>(N)</code>: el cociente entre lo que el estado de corriente máxima usa y lo que Robertson permite.</p>
       <ul>
         <li><b>N = 2 y N = 3:</b> <code>C = 1</code> exacto. Robertson <b class="g">satura</b>.</li>
         <li><b>N ≥ 4, cualquiera:</b> <code>C &gt; 1</code> <b>estrictamente</b>. No satura: queda un exceso <code>δ(N) = C − 1 &gt; 0</code>, el cuanto algebraico.</li>
-        <li><b>N → ∞:</b> <code>C</code> crece sin parar y se acerca a <code>C<sub>∞</sub> = √(π²/3 − 2) ≈ 1.1357</code>, <b class="v">sin alcanzarlo nunca</b>. El crecimiento es <b>monótono estricto</b> desde N = 4 (cotas de Taylor y polinomios de Bernstein) y el límite viene de la distribución de autovalores de Szegő.</li>
+        <li><b>N → ∞:</b> <code>C</code> crece sin parar y se acerca a <code>C<sub>N</sub><sup>∞</sup> = √(π²/3 − 2) ≈ 1.1357</code>, <b class="v">sin alcanzarlo nunca</b>. El crecimiento es <b>monótono estricto</b> desde N = 4 (cotas de Taylor y polinomios de Bernstein) y el límite viene de la distribución de autovalores de Szegő.</li>
       </ul>
       <div class="sliders">
         <label class="slide"><span>N<sub>x</sub></span><input type="range" id="nx" min="2" max="60" step="1" value="4"><output id="vnx"></output></label>
@@ -204,11 +204,11 @@
       </div>
       <p class="readout" id="r8" aria-live="polite"></p>
       <p>El <b>cuanto volumétrico</b> es el producto de los tres excesos, <code>δ(N<sub>x</sub>) δ(N<sub>y</sub>) δ(N<sub>z</sub>)</code>: se anula en cuanto un eje tiene 2 o 3 sitios, y es positivo cuando los tres tienen 4 o más.</p>
-      <p class="lean"><span class="chip lean">Lean</span> <code>uncertaintyRatio_sq_eq</code> (forma cerrada de <code>C²</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1732">#1732</a></span> · <code>uncertaintyRatio_eq_one_iff</code> (<code>C = 1</code> ⇔ <code>N = 2, 3</code>), <code>one_lt_uncertaintyRatio</code> (<code>N ≥ 4</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1723">#1723</a></span> · <code>uncertaintyRatio_lt_uncertaintyRatio</code> (estrictamente creciente desde <code>N = 4</code>), <code>uncertaintyRatio_lt_sqrt_pi_sq_div_three_sub_two</code> (por debajo de <code>C∞</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1735">#1735</a></span> · <code>tendsto_uncertaintyRatio</code> (límite) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1734">#1734</a></span> · cubo: <code>robertson_schrodinger_cube</code>, <code>volQuantum_pos</code> <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1725">#1725</a> <a href="https://github.com/leanprover-community/physlib/pull/1756">#1756</a></span> · <a href="https://naype888-cloud.github.io/nava-robertson-schrodinger/box.html">la caja interactiva del teorema base</a>.</p>
+      <p class="lean"><span class="chip lean">Lean</span> <code>uncertaintyRatio_sq_eq</code> (forma cerrada de <code>C²</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1732">#1732</a></span> · <code>uncertaintyRatio_eq_one_iff</code> (<code>C = 1</code> ⇔ <code>N = 2, 3</code>), <code>one_lt_uncertaintyRatio</code> (<code>N ≥ 4</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1723">#1723</a></span> · <code>uncertaintyRatio_lt_uncertaintyRatio</code> (estrictamente creciente desde <code>N = 4</code>), <code>uncertaintyRatio_lt_sqrt_pi_sq_div_three_sub_two</code> (por debajo de <code>C_N^∞</code>) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1735">#1735</a></span> · <code>tendsto_uncertaintyRatio</code> (límite) <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1734">#1734</a></span> · cubo: <code>robertson_schrodinger_cube</code>, <code>volQuantum_pos</code> <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1725">#1725</a> <a href="https://github.com/leanprover-community/physlib/pull/1756">#1756</a></span> · <a href="https://naype888-cloud.github.io/nava-robertson-schrodinger/box.html">la caja interactiva del teorema base</a>.</p>
     </div>
     <div class="fig">
       <canvas class="cv sq" id="c8a" aria-label="El cubo abierto de Nx por Ny por Nz sitios"></canvas>
-      <p class="panel-label">C_Nava(N): satura solo en 2 y 3</p>
+      <p class="panel-label">C_N: satura solo en 2 y 3</p>
       <canvas class="cv band" id="c8b" aria-label="C de Nava contra N con su asíntota"></canvas>
       <p class="legend"><span><i class="sw" style="background:var(--green)"></i>eje que satura (N ≤ 3)</span><span><i class="sw" style="background:var(--violet)"></i>eje estricto (N ≥ 4)</span></p>
     </div>
@@ -227,7 +227,7 @@
     </div>
   </section>
 
-  <footer>NRS³ · Cristales · Eduardo Nava-Hernandez · Lean 4 sobre Physlib · <a href="https://github.com/naype888-cloud/nrs3-cristales">código</a></footer>
+  <footer>RS^N³ · Cristales · Eduardo Nava-Hernandez · Lean 4 sobre Physlib · <a href="https://github.com/naype888-cloud/nrs3-cristales">código</a></footer>
 </main>
 <script src="../shared/js/cristales-core.js?v=20261027"></script>
 <script src="../shared/js/figures.js?v=20261027"></script>

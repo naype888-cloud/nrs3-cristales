@@ -1,4 +1,4 @@
-// NRS³ · Cristales — figures. Canvas drawings shared by the landing, the didactic page, the formal note
+// RS^N³ · Cristales — figures. Canvas drawings shared by the landing, the didactic page, the formal note
 // and the laboratory. Colour carries one meaning on every page:
 //   blue = structure and covariance Σ · orange = the bracket Ω (flow) · green = a zero forced by symmetry
 //   violet = group velocity · hue of a site = phase of the wave.
@@ -203,7 +203,7 @@
   }
 
 
-  // ---- C_Nava(N): 1 at N = 2, 3, strictly above 1 from N = 4, rising to C∞ without reaching it --------------
+  // ---- C_N: 1 at N = 2, 3, strictly above 1 from N = 4, rising to C_N^∞ without reaching it --------------
   function drawCN(cv, Ns, o) {
     const [g, W, H] = setup(cv), P = o.pal || pal(), Nmax = o.Nmax || 40, CI = C.CINF;
     const px = 52, py = 20, w = W - px - 64, h = H - py - 32, lo = 0.98, hi = CI + 0.02;
@@ -216,7 +216,7 @@
     for (let n = 2; n <= Nmax; n += n < 10 ? 2 : 10) g.fillText(String(n), X(n), H - 12);
     g.textAlign = "left"; g.fillText("N", px + w + 6, H - 12);
     g.strokeStyle = rgba(P.violet, 0.6); g.setLineDash([5, 4]); g.beginPath(); g.moveTo(px, Y(CI)); g.lineTo(px + w, Y(CI)); g.stroke(); g.setLineDash([]);
-    g.fillStyle = P.violet; g.fillText("C∞ (no se alcanza)", px + w - 118, Y(CI) - 6);
+    g.fillStyle = P.violet; g.fillText("C_N^∞ (no se alcanza)", px + w - 118, Y(CI) - 6);
     g.strokeStyle = P.blue; g.lineWidth = 2; g.beginPath();
     for (let n = 2; n <= Nmax; n++) { const x = X(n), y = Y(C.cNava(n)); n === 2 ? g.moveTo(x, y) : g.lineTo(x, y); }
     g.stroke();

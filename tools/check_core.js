@@ -1,7 +1,7 @@
 // Checks the numerical model of the site against the formulas of the Lean statements, for the fourteen lattices:
 //   Σ_HX = 0 on every plane wave of a symmetric region (covariance_hopping_position_unitPlaneWave),
 //   Ω_HX = the exact sum (expectation_bracket_unitPlaneWave), Robertson–Schrödinger, the box limit −½ v,
-//   and C_Nava(N): = 1 for N = 2, 3; > 1 and increasing from N = 4; below C∞.  Run: node tools/check_core.js
+//   and C_N: = 1 for N = 2, 3; > 1 and increasing from N = 4; below C_N^∞.  Run: node tools/check_core.js
 const C = require("../docs/shared/js/cristales-core.js");
 let bad = 0;
 const fail = (m) => { bad++; console.log("FAIL", m); };
@@ -27,5 +27,5 @@ for (let N = 4; N <= 1e6; N = N < 60 ? N + 1 : N * 2) {
   if (!(c > 1 && c < C.CINF && c >= prev)) fail(`C(${N}) = ${c}`);
   prev = c;
 }
-console.log(bad ? `${bad} failures` : `ok: ${C.LATTICES.length} lattices, C_Nava strictly in (1, C∞) for N ≥ 4`);
+console.log(bad ? `${bad} failures` : `ok: ${C.LATTICES.length} lattices, C_N strictly in (1, C_N^∞) for N ≥ 4`);
 process.exit(bad ? 1 : 0);

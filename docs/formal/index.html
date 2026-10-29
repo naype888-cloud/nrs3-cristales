@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nota formal — NRS³ · Cristales</title>
+<title>Nota formal — RS^N³ · Cristales</title>
 <meta name="description" content="La forma de las covarianzas y los corchetes en un cristal: las catorce redes de Bravais y sus grupos puntuales, la inversión, el grupo pequeño de cada k, el lema de Schur, la fórmula exacta de Ω y su límite, y Robertson 1934. Cada enunciado con su nombre en Lean 4 y su estado.">
 <link rel="icon" href="../media/favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="article">
-<meta property="og:site_name" content="NRS³ · Cristales">
+<meta property="og:site_name" content="RS^N³ · Cristales">
 <meta property="og:title" content="La forma de la incertidumbre en un cristal: simetría y espectro">
 <meta property="og:description" content="Catorce redes, sus grupos puntuales, la inversión, el grupo pequeño, Schur, Ω exacta y su límite, y Robertson 1934, en Lean 4.">
 <meta property="og:url" content="https://naype888-cloud.github.io/nrs3-cristales/formal/">
@@ -37,14 +37,14 @@
 <body>
 <main class="formal">
   <nav class="navbar" aria-label="Sitio">
-    <a class="brand" href="../">NRS³ · Cristales<span class="sect"> · Nota formal</span></a>
+    <a class="brand" href="../">RS^N³ · Cristales<span class="sect"> · Nota formal</span></a>
     <a class="pill" href="../didactic/">Didáctica</a>
     <a class="pill" href="./" aria-current="page">Formal</a>
     <a class="pill" href="../lab/">Laboratorio</a>
     <button class="pill" id="theme" type="button">☀ Claro</button>
   </nav>
 
-  <p class="series">NRS³ Cristales · Nota técnica · Lean 4 sobre Physlib</p>
+  <p class="series">RS^N³ Cristales · Nota técnica · Lean 4 sobre Physlib</p>
   <h1>La forma de la incertidumbre en un cristal: la simetría da las entradas nulas, el espectro da el tamaño</h1>
   <div class="rule" aria-hidden="true"></div>
 
@@ -263,13 +263,13 @@
 
   <div class="prop">
     <div class="h">Teorema 5.4 <span>· el cubo de <i>N</i> sitios por eje · <code>uncertaintyRatio_sq_eq</code>, <code>uncertaintyRatio_eq_one_iff</code>, <code>uncertaintyRatio_lt_uncertaintyRatio</code>, <code>tendsto_uncertaintyRatio</code> · <span class="chip alpha">PhyslibAlpha · <a href="https://github.com/leanprover-community/physlib/pull/1723">#1723</a> <a href="https://github.com/leanprover-community/physlib/pull/1732">#1732</a> <a href="https://github.com/leanprover-community/physlib/pull/1734">#1734</a> <a href="https://github.com/leanprover-community/physlib/pull/1735">#1735</a></span></span></div>
-    <p>En el cubo abierto <i>N<sub>x</sub> × N<sub>y</sub> × N<sub>z</sub></i> los ejes conmutan y cada uno lleva su constante <i>C<sub>Nava</sub>(N)</i>, con
+    <p>En el cubo abierto <i>N<sub>x</sub> × N<sub>y</sub> × N<sub>z</sub></i> los ejes conmutan y cada uno lleva su constante <i>C<sub>N</sub>(N)</i>, con
     <i>θ = π/(N+1)</i> y</p>
     <div class="eq"><math display="block"><msup><mi>C</mi><mn>2</mn></msup><mo>=</mo><mfrac><mrow><mn>2</mn><mo>(</mo><mi>N</mi><mo>−</mo><mn>1</mn><mo>)</mo></mrow><mrow><mo>(</mo><mi>N</mi><mo>+</mo><mn>1</mn><mo>)</mo><msup><mi>cos</mi><mn>2</mn></msup><mi>θ</mi></mrow></mfrac><mo>(</mo><mfrac><mrow><mo>(</mo><mi>N</mi><mo>+</mo><mn>1</mn><msup><mo>)</mo><mn>2</mn></msup><mo>+</mo><mn>2</mn></mrow><mn>6</mn></mfrac><msup><mi>sin</mi><mn>2</mn></msup><mi>θ</mi><mo>−</mo><mn>1</mn><mo>)</mo><mo>.</mo></math><span class="tag">(5.3)</span></div>
     <ol>
       <li><i>C(N) = 1</i> exactamente para <i>N = 2, 3</i>: la relación de Robertson <b>satura</b> (<code>uncertaintyRatio_eq_one_iff</code>).</li>
       <li><i>C(N) &gt; 1</i> <b>estrictamente</b> para todo <i>N ≥ 4</i> (<code>one_lt_uncertaintyRatio</code>): no satura, queda el exceso <i>δ(N) = C(N) − 1 &gt; 0</i>.</li>
-      <li><i>C</i> es estrictamente creciente desde <i>N = 4</i> (<code>uncertaintyRatio_lt_uncertaintyRatio</code>; la forma cerrada, como función de <i>n = N + 1</i>, lo es en <i>n ≥ 5</i>: <code>uncertaintyRatioSqForm_strictMonoOn</code>, cotas de Taylor y polinomios de Bernstein) y <i>C(N) → C<sub>∞</sub> = √(π²/3 − 2) ≈ 1.1357</i> (<code>tendsto_uncertaintyRatio</code>, la distribución de autovalores de Szegő), por debajo y sin alcanzarlo (<code>uncertaintyRatio_lt_sqrt_pi_sq_div_three_sub_two</code>).</li>
+      <li><i>C</i> es estrictamente creciente desde <i>N = 4</i> (<code>uncertaintyRatio_lt_uncertaintyRatio</code>; la forma cerrada, como función de <i>n = N + 1</i>, lo es en <i>n ≥ 5</i>: <code>uncertaintyRatioSqForm_strictMonoOn</code>, cotas de Taylor y polinomios de Bernstein) y <i>C(N) → C<sub>N</sub><sup>∞</sup> = √(π²/3 − 2) ≈ 1.1357</i> (<code>tendsto_uncertaintyRatio</code>, la distribución de autovalores de Szegő), por debajo y sin alcanzarlo (<code>uncertaintyRatio_lt_sqrt_pi_sq_div_three_sub_two</code>).</li>
     </ol>
     <p>En el cubo, <code>robertson_schrodinger_cube</code> da la desigualdad estricta en los tres ejes desde <i>4 × 4 × 4</i> (<a href="https://github.com/leanprover-community/physlib/pull/1725">#1725</a>). El <b>cuanto volumétrico</b> <i>δ(N<sub>x</sub>) δ(N<sub>y</sub>) δ(N<sub>z</sub>)</i> es el producto de los tres excesos: nulo si algún eje tiene 2 o 3 sitios,
     positivo si los tres tienen 4 o más. Los valores: <i>C(4) = 1.00848, C(5) = 1.01835, C(10) = 1.05581, C(100) = 1.12479</i>
@@ -375,10 +375,10 @@
 <tr><td>Saturación de Robertson–Schrödinger solo en N = 2, 3; estricta desde N = 4 (eje)</td><td><code>centeredGramDefect_maxCurrentState_eq_zero_iff, robertson_schrodinger_maxCurrentState_lt</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/TightBindingChain/MaxCurrentState/Saturation.lean">Saturation.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1718">PhyslibAlpha #1718</a></span></td></tr>
 <tr><td>Cubo: cada eje con su <i>C</i>, ejes que conmutan, estricto desde 4 × 4 × 4, <i>det Σ = (C<sub>x</sub>C<sub>y</sub>C<sub>z</sub>)² |det Ω|</i></td><td><code>robertson_schrodinger_cube, bracketMatrix_cubePairs, det_covarianceMatrix_maxCurrentCubeState, robertson_det_maxCurrentCubeState_strict</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/TightBindingChain/Cube/Basic.lean">Basic.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1725">PhyslibAlpha #1725</a></span> <span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1742">PhyslibAlpha #1742</a></span></td></tr>
 <tr><td>Cuanto volumétrico <i>δ(Nx)δ(Ny)δ(Nz)</i>: nulo si algún eje tiene 2 o 3 sitios, positivo desde 4 × 4 × 4</td><td><code>volQuantum_eq_zero_iff, volQuantum_pos</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/TightBindingChain/Cube/VolumetricQuantum.lean">VolumetricQuantum.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1756">PhyslibAlpha #1756</a></span></td></tr>
-<tr><td><i>C</i> estrictamente creciente desde N = 4 y por debajo de <i>C<sub>∞</sub></i> (Taylor y Bernstein)</td><td><code>uncertaintyRatio_lt_uncertaintyRatio, uncertaintyRatioSqForm_strictMonoOn</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/TightBindingChain/MaxCurrentState/LongChainMonotonicity.lean">LongChainMonotonicity.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1735">PhyslibAlpha #1735</a></span></td></tr>
-<tr><td>Límite <i>C → C<sub>∞</sub> = √(π²/3 − 2)</i> (Szegő)</td><td><code>tendsto_uncertaintyRatio, tendsto_uncertaintyRatioSqForm</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/TightBindingChain/MaxCurrentState/LongChainLimit.lean">LongChainLimit.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1734">PhyslibAlpha #1734</a></span></td></tr>
-<tr><td>El paso de eje es estrictamente el más corto: 1 &lt; √2 &lt; √3; con un solo eje no hay diagonal</td><td><code>OrthogonalStep.minimal_adjacency_is_orthogonal, DiagonalNeedsTwoAxes.no_diagonal_of_one_axis</code></td><td><a href="https://github.com/naype888-cloud/nava-robertson-schrodinger/blob/main/NavaRobertsonIndependent/Mathematics/D4_WhyNotDiagonal.lean">D4_WhyNotDiagonal.lean</a></td><td><span class="chip pr"><a href="https://github.com/naype888-cloud/nava-robertson-schrodinger">corpus NRS</a></span></td></tr>
-<tr><td>Banda del ángulo NRS: <i>θ<sub>NRS</sub>(4) ≤ θ<sub>NRS</sub>(d) &lt; arccos(1/C<sub>∞</sub>)</i> para d ≥ 4</td><td><code>SpectrumBounds.angleNRS_spectrum_bounds</code></td><td><a href="https://github.com/naype888-cloud/nava-robertson-schrodinger/blob/main/NavaRobertsonIndependent/Mathematics/D48_SpectrumBounds.lean">D48_SpectrumBounds.lean</a></td><td><span class="chip pr"><a href="https://github.com/naype888-cloud/nava-robertson-schrodinger">corpus NRS</a></span></td></tr>
+<tr><td><i>C</i> estrictamente creciente desde N = 4 y por debajo de <i>C<sub>N</sub><sup>∞</sup></i> (Taylor y Bernstein)</td><td><code>uncertaintyRatio_lt_uncertaintyRatio, uncertaintyRatioSqForm_strictMonoOn</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/TightBindingChain/MaxCurrentState/LongChainMonotonicity.lean">LongChainMonotonicity.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1735">PhyslibAlpha #1735</a></span></td></tr>
+<tr><td>Límite <i>C → C<sub>N</sub><sup>∞</sup> = √(π²/3 − 2)</i> (Szegő)</td><td><code>tendsto_uncertaintyRatio, tendsto_uncertaintyRatioSqForm</code></td><td><a href="https://github.com/leanprover-community/physlib/blob/master/PhyslibAlpha/CondensedMatter/TightBindingChain/MaxCurrentState/LongChainLimit.lean">LongChainLimit.lean</a></td><td><span class="chip alpha"><a href="https://github.com/leanprover-community/physlib/pull/1734">PhyslibAlpha #1734</a></span></td></tr>
+<tr><td>El paso de eje es estrictamente el más corto: 1 &lt; √2 &lt; √3; con un solo eje no hay diagonal</td><td><code>OrthogonalStep.minimal_adjacency_is_orthogonal, DiagonalNeedsTwoAxes.no_diagonal_of_one_axis</code></td><td><a href="https://github.com/naype888-cloud/nava-robertson-schrodinger/blob/main/NavaRobertsonIndependent/Mathematics/D4_WhyNotDiagonal.lean">D4_WhyNotDiagonal.lean</a></td><td><span class="chip pr"><a href="https://github.com/naype888-cloud/nava-robertson-schrodinger">corpus RS^N</a></span></td></tr>
+<tr><td>Banda del ángulo RS^N: <i>θ<sub>RS^N</sub>(4) ≤ θ<sub>RS^N</sub>(d) &lt; arccos(1/C<sub>N</sub><sup>∞</sup>)</i> para d ≥ 4</td><td><code>SpectrumBounds.angleNRS_spectrum_bounds</code></td><td><a href="https://github.com/naype888-cloud/nava-robertson-schrodinger/blob/main/NavaRobertsonIndependent/Mathematics/D48_SpectrumBounds.lean">D48_SpectrumBounds.lean</a></td><td><span class="chip pr"><a href="https://github.com/naype888-cloud/nava-robertson-schrodinger">corpus RS^N</a></span></td></tr>
 <!--LG:end-->
   </table></div>
 
@@ -403,7 +403,7 @@ node tools/check_core.js            # las 14 redes: Σ_HX = 0, Ω = fórmula (5.
   </ul>
 
   <div class="pager"><a href="../didactic/">← Versión didáctica</a><a href="../lab/">Laboratorio →</a></div>
-  <footer>NRS³ · Cristales · Eduardo Nava-Hernandez · NRS Noncommercial License 1.0.0 · <a href="https://github.com/naype888-cloud/nrs3-cristales">código</a></footer>
+  <footer>RS^N³ · Cristales · Eduardo Nava-Hernandez · NRS Noncommercial License 1.0.0 · <a href="https://github.com/naype888-cloud/nrs3-cristales">código</a></footer>
 </main>
 <script src="../shared/js/cristales-core.js?v=20261027"></script>
 <script src="../shared/js/figures.js?v=20261027"></script>

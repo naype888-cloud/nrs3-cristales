@@ -1,4 +1,4 @@
-// NRS³ · Cristales — the didactic page. One lattice chosen by the reader drives every figure.
+// RS^N³ · Cristales — the didactic page. One lattice chosen by the reader drives every figure.
 (() => {
   "use strict";
   const C = window.Cristales, F = window.Fig, LAT = C.LATTICES;
@@ -150,7 +150,7 @@
     ["x", "y", "z"].forEach((a, j) => ($("vn" + a).textContent = Ns[j]));
     $("r8").innerHTML = ["x", "y", "z"].map((a, j) => `eje ${a}: N = <b>${Ns[j]}</b> · C = <b>${I.C[j].toFixed(6)}</b> · δ = ` +
       (I.sat[j] ? `<b class="ok">0 (satura)</b>` : `<b class="hot">${I.delta[j].toExponential(3)} &gt; 0 (estricto)</b>`)).join("<br>") +
-      `<br>cuanto volumétrico δδδ = <b>${I.vol === 0 ? "0" : I.vol.toExponential(3)}</b> · C<sub>∞</sub> = ${C.CINF.toFixed(6)} (no se alcanza)`;
+      `<br>cuanto volumétrico δδδ = <b>${I.vol === 0 ? "0" : I.vol.toExponential(3)}</b> · C<sub>N</sub><sup>∞</sup> = ${C.CINF.toFixed(6)} (no se alcanza)`;
     draw();
   }
   for (const id of ["nx", "ny", "nz"]) $(id).addEventListener("input", cube);

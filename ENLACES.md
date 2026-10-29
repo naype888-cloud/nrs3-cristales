@@ -13,7 +13,7 @@ lo que no está probado está marcado como tal.
 | Los operadores de ejes distintos conmutan | `bracket_alongX_alongY`, `…_alongX_alongZ`, `…_alongY_alongZ` | PhyslibAlpha, #1725 |
 | En el estado de corriente máxima del cubo, las covarianzas entre ejes son 0 | `covariance_alongX_alongY` (y XZ, YZ) | PhyslibAlpha, #1725 |
 | `Ω` y `Σ` son diagonales por bloques, un bloque por eje | `bracketMatrix_cubePairs`, `covarianceMatrix_maxCurrentCubeState` | PhyslibAlpha, #1725, #1742 |
-| El paso de eje es estrictamente el más corto (1 < √2 < √3); con un solo eje no hay diagonal | `OrthogonalStep.minimal_adjacency_is_orthogonal`, `DiagonalNeedsTwoAxes.no_diagonal_of_one_axis` | corpus NRS, `D4_WhyNotDiagonal.lean` |
+| El paso de eje es estrictamente el más corto (1 < √2 < √3); con un solo eje no hay diagonal | `OrthogonalStep.minimal_adjacency_is_orthogonal`, `DiagonalNeedsTwoAxes.no_diagonal_of_one_axis` | corpus RS^N, `D4_WhyNotDiagonal.lean` |
 | Censo de palabras de dos pasos: 6 de regreso, 12·2 de diagonal de cara, 6 de doble eje, total 36 | `palabras2_regreso`, `palabras2_diagonalCara`, `palabras2_dobleEje`, `suma_palabras2` | este repo, `Schur.lean` (`decide`) |
 | Cada paso de eje cambia la paridad: `H_PP = H_QQ = 0` en FCC | `not_even_iff_of_mem_vecinos` | este repo |
 | El complemento de Schur de FCC es exacto, sin serie | `det_sub_bipartita`, `schur_bipartita` | este repo |

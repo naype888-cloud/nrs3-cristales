@@ -1,4 +1,4 @@
-// NRS³ · Cristales — the laboratory: every lattice with its own parameters.
+// RS^N³ · Cristales — the laboratory: every lattice with its own parameters.
 (() => {
   "use strict";
   const C = window.Cristales, F = window.Fig, LAT = C.LATTICES;
@@ -66,7 +66,7 @@
     const Ns = [+$("nx").value, +$("ny").value, +$("nz").value], I = C.cubeInfo(Ns);
     ["x", "y", "z"].forEach((a, j) => ($("vn" + a).textContent = Ns[j]));
     $("rc").innerHTML = ["x", "y", "z"].map((a, j) => `${a}: N = <b>${Ns[j]}</b> · C = <b>${I.C[j].toFixed(6)}</b> · ` + (I.sat[j] ? `<b class="ok">satura</b>` : `<b class="hot">δ = ${I.delta[j].toExponential(2)} &gt; 0</b>`)).join("<br>") +
-      `<br>δδδ = <b>${I.vol === 0 ? "0" : I.vol.toExponential(3)}</b> · C<sub>∞</sub> = ${C.CINF.toFixed(6)} (no se alcanza)`;
+      `<br>δδδ = <b>${I.vol === 0 ? "0" : I.vol.toExponential(3)}</b> · C<sub>N</sub><sup>∞</sup> = ${C.CINF.toFixed(6)} (no se alcanza)`;
     const P = F.pal();
     F.drawBox($("cubo"), Ns, { pal: P, yaw: st.yaw, pitch: st.pitch }); F.drawCN($("cn"), Ns, { pal: P, Nmax: 60 });
   }

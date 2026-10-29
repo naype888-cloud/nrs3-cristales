@@ -1,4 +1,4 @@
-# NRS³ · Cristales
+# RS^N³ · Cristales
 
 **La simetría da la forma de `Σ` y `Ω`; el espectro da el tamaño.** Toda red de Bravais es
 simétrica bajo la inversión `n ↦ −n`. Junto con la inversión temporal, eso obliga a que la
@@ -10,7 +10,7 @@ norma. Lean 4 sobre Physlib (rama `mosaic-cristales` del fork).
 
 **[▶ El sitio](https://naype888-cloud.github.io/nrs3-cristales/)** · [Didáctica, en ocho pasos](https://naype888-cloud.github.io/nrs3-cristales/didactic/) · [Nota formal, con el libro de lemas](https://naype888-cloud.github.io/nrs3-cristales/formal/) · [Laboratorio: las 14 redes con todos sus parámetros](https://naype888-cloud.github.io/nrs3-cristales/lab/)
 
-El cubo de `N` sitios por eje se muestra con su `C_Nava(N)`: `= 1` solo en `N = 2, 3` (Robertson satura), **estrictamente `> 1` desde `N = 4`**, creciente (monotonía analítica por cotas de Taylor y polinomios de Bernstein, PhyslibAlpha #1735) y con límite `C∞ = √(π²/3 − 2)` (#1734) que no se alcanza.
+El cubo de `N` sitios por eje se muestra con su `C_N`: `= 1` solo en `N = 2, 3` (Robertson satura), **estrictamente `> 1` desde `N = 4`**, creciente (monotonía analítica por cotas de Taylor y polinomios de Bernstein, PhyslibAlpha #1735) y con límite `C_N^∞ = √(π²/3 − 2)` (#1734) que no se alcanza.
 
 ![La página](docs/figures/cristales.png)
 
@@ -103,18 +103,18 @@ Solo se esperan los axiomas `propext`, `Classical.choice` y `Quot.sound`.
 
 ## El mosaico
 
-- [NRS y NRS³ — el teorema base](https://github.com/naype888-cloud/nava-robertson-schrodinger)
-- [NRS³ · Mandelstam–Tamm y Cramér–Rao](https://github.com/naype888-cloud/nrs3-mandelstam-tamm-cramer-rao)
-- [NRS³ · Landauer y Carnot](https://github.com/naype888-cloud/nrs3-landauer-carnot)
-- [NRS³ · de Sitter](https://github.com/naype888-cloud/nrs3-de-sitter)
-- [NRS³ · Penrose](https://github.com/naype888-cloud/nrs3-penrose) (propuesta)
-- [NRS³ · Pauli–Dirac](https://github.com/naype888-cloud/nrs3-pauli-dirac)
-- [NRS³ · El cono de la incertidumbre](https://github.com/naype888-cloud/nrs3-uncertainty-cone)
-- [NRS³ · Poincaré](https://github.com/naype888-cloud/nrs3-poincare)
-- [NRS³ · Defecto y curvatura](https://github.com/naype888-cloud/nrs3-defect-curvature)
-- [NRS³ · Rovelli — Loop Quantum Gravity](https://github.com/naype888-cloud/nrs3-rovelli-lqg) (propuesta)
-- [NRS³ · Dark](https://github.com/naype888-cloud/nrs3-dark)
-- **[NRS³ · Cristales](https://github.com/naype888-cloud/nrs3-cristales)** (este)
+- [RS^N y RS^N³ — el teorema base](https://github.com/naype888-cloud/nava-robertson-schrodinger)
+- [RS^N³ · Mandelstam–Tamm y Cramér–Rao](https://github.com/naype888-cloud/nrs3-mandelstam-tamm-cramer-rao)
+- [RS^N³ · Landauer y Carnot](https://github.com/naype888-cloud/nrs3-landauer-carnot)
+- [RS^N³ · de Sitter](https://github.com/naype888-cloud/nrs3-de-sitter)
+- [RS^N³ · Penrose](https://github.com/naype888-cloud/nrs3-penrose) (propuesta)
+- [RS^N³ · Pauli–Dirac](https://github.com/naype888-cloud/nrs3-pauli-dirac)
+- [RS^N³ · El cono de la incertidumbre](https://github.com/naype888-cloud/nrs3-uncertainty-cone)
+- [RS^N³ · Poincaré](https://github.com/naype888-cloud/nrs3-poincare)
+- [RS^N³ · Defecto y curvatura](https://github.com/naype888-cloud/nrs3-defect-curvature)
+- [RS^N³ · Rovelli — Loop Quantum Gravity](https://github.com/naype888-cloud/nrs3-rovelli-lqg) (propuesta)
+- [RS^N³ · Dark](https://github.com/naype888-cloud/nrs3-dark)
+- **[RS^N³ · Cristales](https://github.com/naype888-cloud/nrs3-cristales)** (este)
 
 ## Licencia
 
