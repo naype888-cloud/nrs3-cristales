@@ -54,3 +54,12 @@ open CondensedMatter Crystal ProbabilisticTheory
 #print axioms NRS3Cristales.card_igualParidad_caja_cuatro
 #print axioms NRS3Cristales.im_val_maxCurrentCubeState_of_even
 #print axioms NRS3Cristales.tension_parteFCC_eq_zero
+#print axioms NRS3Cristales.simbolo_vecinos
+#print axioms NRS3Cristales.simbolo_dospasos
+#print axioms NRS3Cristales.simbolo_palabras2
+#print axioms NRS3Cristales.banda_fcc_refinada
+#print axioms NRS3Cristales.banda_fcc_refinada_eq_pesos
+#print axioms NRS3Cristales.banda_fcc_refinada_nonneg
+#print axioms NRS3Cristales.banda_fcc_refinada_le
+#print axioms NRS3Cristales.banda_fcc_refinada_zero
+#print axioms NRS3Cristales.banda_truncada_negativa

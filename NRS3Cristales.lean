@@ -4,3 +4,4 @@ import NRS3Cristales.Palabras
 import NRS3Cristales.PalabrasCubo
 import NRS3Cristales.Schur
 import NRS3Cristales.SchurCubo
+import NRS3Cristales.FccRefinado
