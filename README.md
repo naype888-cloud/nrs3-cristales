@@ -6,7 +6,7 @@
 **Eduardo Nava Hernández**  
 *Vérification formelle en Lean 4 · 0 sorry · Physlib (PhyslibAlpha)*
 
-[![Lean 4](https://img.shields.io/badge/Lean_4-v4.34.1-blue.svg?style=flat-square)](https://leanprover.github.io/)
+[![Lean 4](https://img.shields.io/badge/Lean_4-v4.35.0-blue.svg?style=flat-square)](https://leanprover.github.io/)
 [![Mathlib](https://img.shields.io/badge/Mathlib-v%C3%A9rifi%C3%A9-2ea44f.svg?style=flat-square)](https://github.com/leanprover-community/mathlib4)
 [![Kernel Status](https://img.shields.io/badge/Kernel-0%20sorry-brightgreen.svg?style=flat-square)]()
 [![Physlib](https://img.shields.io/badge/Physlib-PRs%20fusionn%C3%A9es-7c5cd6.svg?style=flat-square)](https://github.com/leanprover-community/physlib/pulls?q=is%3Apr+is%3Amerged+author%3Anaype888-cloud)
@@ -40,7 +40,7 @@
 
 ## ⚡ Résumé formel
 
-Le dépôt a sept fichiers Lean, tous dans [NRS3Cristales/](NRS3Cristales) ; ils compilent avec `lake build` (3240 tâches) et [`Verification/Axioms.lean`](Verification/Axioms.lean) imprime pour chaque résultat les seuls axiomes `propext`, `Classical.choice`, `Quot.sound`.
+Le dépôt a sept fichiers Lean, tous dans [NRS3Cristales/](NRS3Cristales) ; ils compilent avec `lake build` (3306 tâches) et [`Verification/Axioms.lean`](Verification/Axioms.lean) imprime pour chaque résultat les seuls axiomes `propext`, `Classical.choice`, `Quot.sound`.
 
 * [`Resumen.lean`](NRS3Cristales/Resumen.lean) ré-énonce, avec un `example` chacun, les lemmes de la bibliothèque utilisés : il ne compile que si les lemmes disent exactement cela.
 * [`Diagonal.lean`](NRS3Cristales/Diagonal.lean) : le petit groupe sur la diagonale du réseau carré (`omega_diagonal`).
@@ -49,7 +49,7 @@ Le dépôt a sept fichiers Lean, tous dans [NRS3Cristales/](NRS3Cristales) ; ils
 * [`SchurCubo.lean`](NRS3Cristales/SchurCubo.lean) : la partie fcc de l’état de courant maximal ne porte pas de tension.
 * [`FccRefinado.lean`](NRS3Cristales/FccRefinado.lean) : la bande fcc raffinée est le carré de la bande cubique.
 
-Les lemmes de bibliothèque viennent de Physlib : les groupes ponctuels, Robertson dans une \*-algèbre et le cube sont fusionnés dans `leanprover-community/physlib` ; l’inversion, la vitesse de groupe et le petit groupe sont dans la branche [`mosaic-cristales`](https://github.com/naype888-cloud/physlib/tree/mosaic-cristales) du fork, au commit `6aa4163f` fixé par lakefile.toml.
+Les lemmes de bibliothèque viennent de Physlib : les groupes ponctuels, Robertson dans une \*-algèbre et le cube sont fusionnés dans `leanprover-community/physlib` ; l’inversion, la vitesse de groupe et le petit groupe sont dans la branche [`cristales-435`](https://github.com/naype888-cloud/physlib/tree/cristales-435) du fork (`master` de Physlib plus `mosaic-cristales`, Lean 4.35), au commit `cede8e00` fixé par lakefile.toml. Le graphe de Cayley, les chemins et le produit cartésien de graphes viennent de Mathlib.
 
 ---
 
@@ -80,7 +80,7 @@ Les lemmes de bibliothèque viennent de Physlib : les groupes ponctuels, Roberts
 <div align="center"><img src="assets/plaque_cr_etape2.png" alt="L’inversion est une symétrie ; f H f = H, f X f = −X ; covariance nulle de H et X dans toute onde plane" width="860"></div>
 
 *Module formel :* [`NRS3Cristales/Resumen.lean`](NRS3Cristales/Resumen.lean), section 2.  
-*Lemmes :* `PeriodicGraph.inversion_mem_symmetries`, `inversionReversal_hopping`, `inversionReversal_position`, `covariance_hopping_position_unitPlaneWave` ([Crystal/Inversion](https://github.com/naype888-cloud/physlib/blob/6aa4163ffeecfdad676085cdb52a5d89e11573f4/PhyslibAlpha/CondensedMatter/Crystal/Inversion.lean), branche `mosaic-cristales`).
+*Lemmes :* `PeriodicGraph.inversion_mem_symmetries`, `inversionReversal_hopping`, `inversionReversal_position`, `covariance_hopping_position_unitPlaneWave` ([Crystal/Inversion](https://github.com/naype888-cloud/physlib/blob/cede8e0093b13ea8ec2e8bdeb3984dc275ce0731/PhyslibAlpha/CondensedMatter/Crystal/Inversion.lean), branche `cristales-435`).
 
 ---
 
@@ -91,7 +91,7 @@ Les lemmes de bibliothèque viennent de Physlib : les groupes ponctuels, Roberts
 <div align="center"><img src="assets/plaque_cr_etape3.png" alt="Petit groupe : covariance et crochet nuls dans les directions renversées ; crochet nul si chi(−n) = chi(n) ; égalité des crochets en x et y sur la diagonale du carré" width="860"></div>
 
 *Module formel :* [`NRS3Cristales/Diagonal.lean`](NRS3Cristales/Diagonal.lean) (`omega_diagonal`, `intercambio`, `intercambioSim`, `intercambio_mem_box`).  
-*Lemmes :* `covariance_hopping_position_littleGroup`, `expectation_bracket_hopping_position_littleGroup`, `expectation_bracket_hopping_position_of_neg`, `expectation_bracket_hopping_position_comp_littleGroup` ([Crystal/LittleGroup](https://github.com/naype888-cloud/physlib/blob/6aa4163ffeecfdad676085cdb52a5d89e11573f4/PhyslibAlpha/CondensedMatter/Crystal/LittleGroup.lean), branche `mosaic-cristales`), ré-énoncés dans `Resumen.lean`, section 6.
+*Lemmes :* `covariance_hopping_position_littleGroup`, `expectation_bracket_hopping_position_littleGroup`, `expectation_bracket_hopping_position_of_neg`, `expectation_bracket_hopping_position_comp_littleGroup` ([Crystal/LittleGroup](https://github.com/naype888-cloud/physlib/blob/cede8e0093b13ea8ec2e8bdeb3984dc275ce0731/PhyslibAlpha/CondensedMatter/Crystal/LittleGroup.lean), branche `cristales-435`), ré-énoncés dans `Resumen.lean`, section 6.
 
 ---
 
@@ -102,7 +102,7 @@ Les lemmes de bibliothèque viennent de Physlib : les groupes ponctuels, Roberts
 <div align="center"><img src="assets/plaque_cr_etape4.png" alt="Le crochet comme somme sur les liaisons, la bande et sa dérivée, et la limite sur les grandes boîtes" width="860"></div>
 
 *Module formel :* [`NRS3Cristales/Resumen.lean`](NRS3Cristales/Resumen.lean), section 3.  
-*Lemmes :* `expectation_bracket_unitPlaneWave`, `hasDerivAt_band`, `tendsto_expectation_bracket_box` ([Crystal/GroupVelocity](https://github.com/naype888-cloud/physlib/blob/6aa4163ffeecfdad676085cdb52a5d89e11573f4/PhyslibAlpha/CondensedMatter/Crystal/GroupVelocity.lean), branche `mosaic-cristales`). La limite utilise la propriété de Følner des boîtes.
+*Lemmes :* `expectation_bracket_unitPlaneWave`, `hasDerivAt_band`, `tendsto_expectation_bracket_box` ([Crystal/GroupVelocity](https://github.com/naype888-cloud/physlib/blob/cede8e0093b13ea8ec2e8bdeb3984dc275ce0731/PhyslibAlpha/CondensedMatter/Crystal/GroupVelocity.lean), branche `cristales-435`). La limite utilise la propriété de Følner des boîtes.
 
 ---
 
@@ -131,12 +131,13 @@ Les lemmes de bibliothèque viennent de Physlib : les groupes ponctuels, Roberts
 
 ### Étape 7 : Le complément de Schur — fcc et bcc sont des mots de pas d’axe
 
-> **Proposition 7.1 (Schur exact pour fcc).** On sépare les positions en P et Q et le pas d’axe en blocs. Si H_PP = H_QQ = 0, alors det(E − H) = E^|Q| det(E − H_PQ H_QP / E), et Hψ = Eψ si et seulement si ψ_Q = H_QP ψ_P / E et H_PQ H_QP ψ_P = E² ψ_P. Pour fcc (P = somme des coordonnées paire) le pas d’axe change la parité, donc H_PP = H_QQ = 0. Les entrées de H_PQ H_QP comptent les mots de deux pas d’axe : 6 de retour, 2 vers chaque ±eᵢ ± eⱼ, 1 vers chaque ±2eᵢ, et rien d’autre : 6 + 12·2 + 6·1 = 36. Pour bcc, la diagonale de corps (1, 1, 1) n’est atteinte par aucun mot de deux pas et par 6 mots de trois pas. La boîte 3³ contient la maille fcc (14 positions) et la maille bcc (9) ; la boîte 4³, 32 et 16.
+> **Proposition 7.1 (Schur exact sur le cube ouvert).** ℤ³ est le graphe de Cayley (addCayley, la version additive de `SimpleGraph.mulCayley` de Mathlib) des six pas d’axe `axisStep` de Physlib : les voisins d’axe sont ses voisins. Le cube ouvert est le produit cartésien de trois chemins de Mathlib, P_Nx □ P_Ny □ P_Nz ; sur chaque axe c’est le saut de la chaîne ouverte (#2096), et ses arêtes sont celles du graphe de Cayley vues dans la boîte. Chaque arête change la parité de x + y + z, donc, avec P les positions paires et Q les impaires, H_PP = H_QQ = 0 est un théorème du cube ouvert, et le complément de Schur est exact avec sa matrice d’adjacence A ; H_PQ H_QP est A² sur les positions paires, c’est-à-dire le nombre de chemins de longueur 2. En général, on sépare les positions en P et Q et le pas d’axe en blocs. Si H_PP = H_QQ = 0, alors det(E − H) = E^|Q| det(E − H_PQ H_QP / E), et Hψ = Eψ si et seulement si ψ_Q = H_QP ψ_P / E et H_PQ H_QP ψ_P = E² ψ_P. Pour fcc (P = somme des coordonnées paire) le pas d’axe change la parité, donc H_PP = H_QQ = 0. Les entrées de H_PQ H_QP comptent les mots de deux pas d’axe : 6 de retour, 2 vers chaque ±eᵢ ± eⱼ, 1 vers chaque ±2eᵢ, et rien d’autre : 6 + 12·2 + 6·1 = 36. Pour bcc, la diagonale de corps (1, 1, 1) n’est atteinte par aucun mot de deux pas et par 6 mots de trois pas. La boîte 3³ contient la maille fcc (14 positions) et la maille bcc (9) ; la boîte 4³, 32 et 16.
 
 <div align="center"><img src="assets/plaque_cr_etape7.png" alt="Complément de Schur bipartite, vecteurs propres par blocs, poids 6, 2, 1 de fcc, mots de bcc et positions des boîtes 3 et 4" width="860"></div>
 
-*Module formel :* [`NRS3Cristales/Schur.lean`](NRS3Cristales/Schur.lean) (`det_sub_bipartita`, `schur_bipartita`, `not_even_iff_of_mem_vecinos`, `palabras2_add`, `palabras2_regreso`, `palabras2_diagonalCara`, `palabras2_dobleEje`, `suma_palabras2`, `palabras2_cuerpo`, `palabras3_cuerpo`, `palabras2_adyacentes_Q`, `card_pares_caja_tres`, `card_igualParidad_caja_tres`, `card_pares_caja_cuatro`, `card_igualParidad_caja_cuatro`).  
-*Physlib :* le même énoncé de voisinage pour fcc et bcc est fusionné dans PR #1987 ; ce dépôt ne l’importe pas, il le recompte par `decide`.
+*Module formel :* [`NRS3Cristales/Schur.lean`](NRS3Cristales/Schur.lean) (`redCubica`, `mem_vecinos_iff_adj`, `palabras2_eq_card_fiber`, `palabras2_diagonalCara_fiber`, `det_sub_bipartita`, `schur_bipartita`, `not_even_iff_of_mem_vecinos`, `palabras2_add`, `palabras2_regreso`, `palabras2_diagonalCara`, `palabras2_dobleEje`, `suma_palabras2`, `palabras2_cuerpo`, `palabras3_cuerpo`, `palabras2_adyacentes_Q`, `card_pares_caja_tres`, `card_igualParidad_caja_tres`, `card_pares_caja_cuatro`, `card_igualParidad_caja_cuatro`).  
+*Module formel :* [`NRS3Cristales/SchurCubo.lean`](NRS3Cristales/SchurCubo.lean) (`cubo_adj_iff`, `paridad_cubo`, `adyacencia_particion`, `det_cubo_schur`, `dosPasos_eq`).  
+*Physlib :* PR #1987 (les pas d’axe `axisStep` et le poids 2, `card_twoStepWords_fiber`, importés ici), PR #2096 (la chaîne ouverte est le saut de `pathGraph`).
 
 ---
 
@@ -147,7 +148,7 @@ Les lemmes de bibliothèque viennent de Physlib : les groupes ponctuels, Roberts
 <div align="center"><img src="assets/plaque_cr_etape8.png" alt="Symbole des mots de deux pas égal au carré de la bande cubique, développement avec les poids 6, 8, 2, borne 0 à 36, comparaison avec le graphe à douze voisins, tension nulle de la partie fcc" width="860"></div>
 
 *Module formel :* [`NRS3Cristales/FccRefinado.lean`](NRS3Cristales/FccRefinado.lean) (`simbolo_vecinos`, `simbolo_dospasos`, `simbolo_palabras2`, `banda_fcc_refinada`, `banda_fcc_refinada_eq_pesos`, `banda_fcc_refinada_nonneg`, `banda_fcc_refinada_le`, `banda_fcc_refinada_zero`, `banda_truncada_negativa`).  
-*Module formel :* [`NRS3Cristales/SchurCubo.lean`](NRS3Cristales/SchurCubo.lean) (`val_maxCurrentState`, `val_maxCurrentCubeState`, `im_val_maxCurrentCubeState_of_even`, `tension_parteFCC_eq_zero`).  
+*Module formel :* [`NRS3Cristales/SchurCubo.lean`](NRS3Cristales/SchurCubo.lean) (`val_maxCurrentState`, `val_maxCurrentCubeState`, `im_val_maxCurrentCubeState_of_even`, `tension_parteFCC_eq_zero`, `tension_parteFCC_dosPasos`).  
 Sur le cube complet, le même état sature la relation de chaque axe à 2 ou 3 positions et est strict dès 4 : dans la boîte 3³ il sature, dans 4³ il rompt. La tension vit dans le pas d’axe P ↔ Q, pas dans la description effective par diagonales.
 
 ---
@@ -161,7 +162,8 @@ Sur le cube complet, le même état sature la relation de chaque axe à 2 ou 3 p
 | **#1802** | `Crystal/PointGroup/Orthorhombic` | Les quatre orthorhombiques : 8 | 1 |
 | **#1986** | `TightBindingChain/Cube/AxisCommutation` | Deux observables du cube commutent ⟺ axes différents | 6 |
 | **#1987** | `Crystal/Examples/AxisStepWords` | Les voisins de fcc et bcc sont des mots de pas d’axe | 7 |
-| branche `mosaic-cristales` | `Crystal/Inversion`, `LittleGroup`, `GroupVelocity` | Inversion, petit groupe, vitesse de groupe | 2, 3, 4 |
+| **#2096** | `TightBindingChain/Open/Basic` | La chaîne ouverte est le saut du graphe chemin de Mathlib | 7 |
+| branche `cristales-435` | `Crystal/Inversion`, `LittleGroup`, `GroupVelocity` | Inversion, petit groupe, vitesse de groupe | 2, 3, 4 |
 
 L’argument complet des liaisons, lemme par lemme, avec ce qui reste ouvert : [ENLACES.md](ENLACES.md).
 
@@ -176,7 +178,7 @@ node tools/check_core.js          # le modèle numérique du site contre les for
 node tools/gen_formal_tables.js   # régénère les tables de la note formelle depuis le même noyau
 ```
 
-lakefile.toml fixe Physlib au commit `6aa4163f` de [naype888-cloud/physlib](https://github.com/naype888-cloud/physlib/tree/mosaic-cristales). Tous les résultats ne dépendent que de :
+lakefile.toml fixe Physlib au commit `cede8e00` de [naype888-cloud/physlib](https://github.com/naype888-cloud/physlib/tree/cristales-435) (Lean 4.35). Tous les résultats ne dépendent que de :
 
 ```text
 [propext, Classical.choice, Quot.sound]
@@ -198,7 +200,7 @@ lakefile.toml fixe Physlib au commit `6aa4163f` de [naype888-cloud/physlib](http
 | **1934** | Robertson : le déterminant pour plusieurs observables | `AlgState.robertson_det` |
 | **1936** | Bouckaert, Smoluchowski et Wigner : le petit groupe de chaque k | `covariance_hopping_position_littleGroup` |
 
-**Antécédents et outils hors de la fenêtre.** Bravais (1848), Følner (1955), Lean 4, Mathlib et Physlib.
+**Antécédents et outils hors de la fenêtre.** Bravais (1848), Cayley (1878), Følner (1955), Lean 4, Mathlib et Physlib.
 
 ---
 

@@ -7,7 +7,7 @@ autoImplicit = false
 [[require]]
 name = "Physlib"
 git = "https://github.com/naype888-cloud/physlib.git"
-rev = "6aa4163ffeecfdad676085cdb52a5d89e11573f4"
+rev = "cede8e0093b13ea8ec2e8bdeb3984dc275ce0731"
 
 [[lean_lib]]
 name = "NRS3Cristales"
