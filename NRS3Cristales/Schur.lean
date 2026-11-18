@@ -6,6 +6,8 @@ Authors: Eduardo Nava-Hernandez
 import Mathlib.LinearAlgebra.Matrix.SchurComplement
 import Mathlib.Basic.Complex.BigOperators
 import Mathlib.Algebra.Order.Ring.Star
+import PhyslibAlpha.CondensedMatter.Crystal.Examples.AxisStepWords
+import Mathlib.Combinatorics.SimpleGraph.Cayley
 
 /-!
 # El complemento de Schur del cubo: los vecinos de FCC y BCC son palabras de pasos de eje
@@ -37,7 +39,11 @@ Además, con transporte de entradas reales, un estado de amplitudes reales tiene
 * `det_sub_bipartita` : `det (E − H) = E^|Q| · det (E − H_PQ H_QP / E)` si `H_PP = H_QQ = 0`.
 * `schur_bipartita` : `H ψ = E ψ ⟺ ψ_Q = H_QP ψ_P / E ∧ H_PQ H_QP ψ_P = E² ψ_P`.
 * `tension_eq_zero_of_real` : entradas reales y amplitudes reales ⇒ tensión `0`.
+* `redCubica`, `mem_vecinos_iff_adj` : `ℤ³` es el grafo de Cayley (`SimpleGraph.addCayley`) de
+  los pasos de eje `axisStep` de Physlib (#1987); los vecinos de eje son sus vecinos.
 * `not_even_iff_of_mem_vecinos` : el paso de eje cambia la paridad (`H_PP = H_QQ = 0` en FCC).
+* `palabras2_eq_card_fiber`, `palabras2_diagonalCara_fiber` : el peso `2` de la diagonal de
+  cara es el de `card_twoStepWords_fiber` (#1987).
 * `palabras2_add` : el número de palabras solo depende del desplazamiento.
 * `palabras2_regreso`, `palabras2_diagonalCara`, `palabras2_dobleEje`, `suma_palabras2` :
   los pesos `6`, `2`, `1` de FCC, y que no hay más.
@@ -142,15 +148,53 @@ end Real
 
 /-! ## C. Palabras de pasos de eje en `ℤ³` -/
 
-/-- Los seis vecinos de eje `v ± eᵢ`. -/
+/-- Los seis vecinos de eje `v ± eᵢ`: `v` más un paso de eje `axisStep` de Physlib (#1987). -/
 def vecinos (v : Fin 3 → ℤ) : Finset (Fin 3 → ℤ) :=
-  (Finset.univ : Finset (Fin 3 × Bool)).image fun is => v + Pi.single is.1 (if is.2 then 1 else -1)
+  (Finset.univ : Finset (Fin 3 × Bool)).image fun is => v + CondensedMatter.Crystal.axisStep is.1 is.2
 
 /-- El número de palabras de dos pasos de eje de `p` a `q`: la entrada `(p, q)` de `H²`. -/
 def palabras2 (p q : Fin 3 → ℤ) : ℕ := ((vecinos p).filter fun w => q ∈ vecinos w).card
 
 /-- El número de palabras de tres pasos de eje de `p` a `q`: la entrada `(p, q)` de `H³`. -/
 def palabras3 (p q : Fin 3 → ℤ) : ℕ := ∑ w ∈ vecinos p, palabras2 w q
+
+/-- Los generadores de la red cúbica: los seis pasos de eje de Physlib (#1987). -/
+def generadores : Set (Fin 3 → ℤ) :=
+  Set.range fun is : Fin 3 × Bool => CondensedMatter.Crystal.axisStep is.1 is.2
+
+/-- **La red cúbica `ℤ³` es el grafo de Cayley de los pasos de eje** (`SimpleGraph.addCayley`). -/
+abbrev redCubica : SimpleGraph (Fin 3 → ℤ) := SimpleGraph.addCayley generadores
+
+lemma ne_zero_of_mem_generadores {g : Fin 3 → ℤ} (hg : g ∈ generadores) : g ≠ 0 := by
+  obtain ⟨⟨i, s⟩, rfl⟩ := hg
+  intro h
+  have := congrFun h i
+  cases s <;> simp [CondensedMatter.Crystal.axisStep] at this
+
+lemma neg_mem_generadores {g : Fin 3 → ℤ} (hg : g ∈ generadores) : -g ∈ generadores := by
+  obtain ⟨⟨i, s⟩, rfl⟩ := hg
+  refine ⟨⟨i, !s⟩, ?_⟩
+  cases s <;> simp [CondensedMatter.Crystal.axisStep, Pi.single_neg]
+
+/-- **Los vecinos de eje son los vecinos del grafo de Cayley**: `palabras2` y `palabras3`
+cuentan caminos de dos y tres pasos en `redCubica`. -/
+lemma mem_vecinos_iff_adj (p q : Fin 3 → ℤ) : q ∈ vecinos p ↔ redCubica.Adj p q := by
+  rw [SimpleGraph.addCayley_adj]
+  have key : q ∈ vecinos p ↔ -p + q ∈ generadores := by
+    simp only [vecinos, Finset.mem_image, Finset.mem_univ, true_and, generadores, Set.mem_range]
+    constructor
+    · rintro ⟨is, rfl⟩
+      exact ⟨is, by abel⟩
+    · rintro ⟨is, h⟩
+      exact ⟨is, by rw [h]; abel⟩
+  rw [key]
+  constructor
+  · intro h
+    exact ⟨fun hpq => ne_zero_of_mem_generadores h (by rw [hpq]; abel), Or.inl h⟩
+  · rintro ⟨-, h | h⟩
+    · exact h
+    · convert neg_mem_generadores h using 1
+      abel
 
 lemma vecinos_add (p v : Fin 3 → ℤ) : vecinos (p + v) = (vecinos v).image (p + ·) := by
   simp only [vecinos, Finset.image_image]
@@ -176,7 +220,7 @@ lemma palabras2_add (p v q : Fin 3 → ℤ) : palabras2 (p + v) (p + q) = palabr
 lemma not_even_iff_of_mem_vecinos {p q : Fin 3 → ℤ} (h : q ∈ vecinos p) :
     ¬ (Even (∑ i, p i) ↔ Even (∑ i, q i)) := by
   obtain ⟨⟨i, s⟩, -, rfl⟩ := Finset.mem_image.mp h
-  simp only [Pi.add_apply, Finset.sum_add_distrib, Finset.sum_pi_single', Finset.mem_univ,
+  simp only [CondensedMatter.Crystal.axisStep, Pi.add_apply, Finset.sum_add_distrib, Finset.sum_pi_single', Finset.mem_univ,
     ite_true]
   cases s <;> simp [Int.even_add, parity_simps] <;> rw [← Int.not_even_iff_odd] <;>
     exact iff_not_self
@@ -189,6 +233,20 @@ lemma palabras2_diagonalCara :
     ∀ i j : Fin 3, i ≠ j → ∀ s t : Bool,
       palabras2 0 (Pi.single i (if s then 1 else -1) + Pi.single j (if t then 1 else -1)) = 2 := by
   decide
+
+open CondensedMatter.Crystal in
+/-- **El peso `2` es el de Physlib**: para cada diagonal de cara, `palabras2` cuenta las mismas
+palabras que la fibra de `twoStepSum` en `twoStepWords` (#1987). -/
+lemma palabras2_eq_card_fiber :
+    ∀ v ∈ twoStepWords.image twoStepSum,
+      palabras2 0 v = (twoStepWords.filter (twoStepSum · = v)).card := by
+  decide
+
+open CondensedMatter.Crystal in
+/-- La diagonal de cara tiene peso `2` por `card_twoStepWords_fiber` (#1987). -/
+lemma palabras2_diagonalCara_fiber :
+    ∀ v ∈ twoStepWords.image twoStepSum, palabras2 0 v = 2 :=
+  fun v hv => (palabras2_eq_card_fiber v hv).trans (card_twoStepWords_fiber v hv)
 
 /-- **El doble paso por un eje es una sola palabra.** -/
 lemma palabras2_dobleEje :

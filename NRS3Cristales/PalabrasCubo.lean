@@ -27,7 +27,7 @@ En el cubo `Tx × Ty × Tz` hay dos clases de pares `(A, B)`:
 
 namespace NRS3Cristales
 
-open ProbabilisticTheory ProbabilisticTheory.UnitalPositiveLinearMap CondensedMatter
+open PhyslibAlpha.ProbabilisticTheory PhyslibAlpha.ProbabilisticTheory.UnitalPositiveLinearMap CondensedMatter
 open CondensedMatter.TightBindingChain
 open scoped selfAdjoint
 
@@ -78,6 +78,8 @@ theorem uno_o_dos_palabras (hx : Tx.t ≠ 0) (hy : Ty.t ≠ 0) (hz : Tz.t ≠ 0)
   have hb := axisBracket_ne_zero hx hy hz hNx hNy hNz k
   have hr := robertson (Tx.maxCurrentCubeVectorState Ty Tz) (Tx.cubePairs Ty Tz (0, k))
     (Tx.cubePairs Ty Tz (1, k))
+  have hb' : (Tx.maxCurrentCubeVectorState Ty Tz)⟨⁅Tx.cubePairs Ty Tz (0, k),
+      Tx.cubePairs Ty Tz (1, k)⁆⟩ ≠ 0 := hb
   exact lt_of_lt_of_le (by positivity) hr
 
 /-- Intercambiar un conmutador cambia su signo. -/

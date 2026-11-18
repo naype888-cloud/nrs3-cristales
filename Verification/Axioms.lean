@@ -2,7 +2,7 @@ import NRS3Cristales
 
 /-! Solo se esperan `propext`, `Classical.choice` y `Quot.sound`. -/
 
-open CondensedMatter Crystal ProbabilisticTheory
+open CondensedMatter Crystal PhyslibAlpha.ProbabilisticTheory
 
 #print axioms card_pointGroup_hypercubic
 #print axioms bcc_card_pointGroup
@@ -63,3 +63,11 @@ open CondensedMatter Crystal ProbabilisticTheory
 #print axioms NRS3Cristales.banda_fcc_refinada_le
 #print axioms NRS3Cristales.banda_fcc_refinada_zero
 #print axioms NRS3Cristales.banda_truncada_negativa
+#print axioms NRS3Cristales.mem_vecinos_iff_adj
+#print axioms NRS3Cristales.palabras2_diagonalCara_fiber
+#print axioms NRS3Cristales.cubo_adj_iff
+#print axioms NRS3Cristales.paridad_cubo
+#print axioms NRS3Cristales.adyacencia_particion
+#print axioms NRS3Cristales.det_cubo_schur
+#print axioms NRS3Cristales.dosPasos_eq
+#print axioms NRS3Cristales.tension_parteFCC_dosPasos

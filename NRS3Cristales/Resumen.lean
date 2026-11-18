@@ -23,7 +23,7 @@ lemas dicen exactamente esto.
 
 namespace NRS3Cristales
 
-open CondensedMatter Crystal ProbabilisticTheory Filter Topology
+open CondensedMatter Crystal PhyslibAlpha.ProbabilisticTheory Filter Topology
 open scoped selfAdjoint
 
 /-! ## 1. Las redes y sus grupos puntuales -/

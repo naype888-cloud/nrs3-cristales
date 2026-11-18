@@ -30,9 +30,10 @@ censo,
 donde `6` es el regreso, `8 cos kᵢ cos kⱼ = 2 · (4 cos kᵢ cos kⱼ)` son las doce diagonales de
 cara con peso `2`, y `2 cos 2kᵢ` son los seis dobles pasos con peso `1`.
 
-El peso `2` de la diagonal de cara es el de `card_twoStepWords_fiber`
-(PhyslibAlpha #1987, abierto): cada vecino de FCC se alcanza con exactamente dos palabras de dos
-pasos. Aquí no se importa ese PR; el peso entra por `palabras2`, de `Schur`.
+El peso `2` de la diagonal de cara es el de `card_twoStepWords_fiber` (Physlib #1987): cada
+vecino de FCC se alcanza con exactamente dos palabras de dos pasos. Los pasos son los `axisStep`
+de ese PR, los generadores del grafo de Cayley `redCubica`, y `palabras2_diagonalCara_fiber`
+(en `Schur`) da el peso por el lema de Physlib.
 
 La diferencia con el truncamiento no es de detalle: la banda refinada es `≥ 0` en todo `k`
 (es un cuadrado, `H_PQ H_QP` es semidefinida positiva), y la del grafo de `12` vecinos con
@@ -83,8 +84,8 @@ lemma paso_inj :
 lemma sum_vecinos_zero {M : Type*} [AddCommMonoid M] (f : (Fin 3 → ℤ) → M) :
     ∑ s ∈ vecinos 0, f s =
       ∑ i : Fin 3, (f (Pi.single i 1) + f (Pi.single i (-1))) := by
-  rw [vecinos, Finset.sum_image (fun x _ y _ h => paso_inj (by simpa using h)),
-    Fintype.sum_prod_type]
+  simp only [vecinos, CondensedMatter.Crystal.axisStep]
+  rw [Finset.sum_image (fun x _ y _ h => paso_inj (by simpa using h)), Fintype.sum_prod_type]
   simp
 
 /-- **El símbolo del paso de eje**: la banda cúbica `2 cos k₁ + 2 cos k₂ + 2 cos k₃`. -/

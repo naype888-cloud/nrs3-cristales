@@ -20,7 +20,7 @@ Es la instancia concreta de `expectation_bracket_hopping_position_comp_littleGro
 
 namespace NRS3Cristales
 
-open CondensedMatter Crystal ProbabilisticTheory
+open CondensedMatter Crystal PhyslibAlpha.ProbabilisticTheory
 open scoped selfAdjoint
 
 /-- El intercambio de los ejes de la red cuadrada. -/
