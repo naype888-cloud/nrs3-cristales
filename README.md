@@ -1,3 +1,5 @@
+<div lang="fr">
+
 <div align="center">
 
 # RS<sup>N</sup>³ · Cristaux
@@ -171,22 +173,44 @@ L’argument complet des liaisons, lemme par lemme, avec ce qui reste ouvert : [
 
 ---
 
-## 🛠️ Compilation et certification
+## 📚 Catalogue des modules Lean
 
-```bash
-lake build
-lake env lean Verification/Axioms.lean
-node tools/check_core.js          # le modèle numérique du site contre les formules des lemmes
-node tools/gen_formal_tables.js   # régénère les tables de la note formelle depuis le même noyau
-```
+| Module | Déclaration principale | Signification | `sorry` |
+|:---|:---|:---|:---:|
+| [`NRS3Cristales/Resumen.lean`](NRS3Cristales/Resumen.lean) | (ré-énoncés `example`) | Vérification directe des lemmes Physlib de symétrie et vitesse de groupe | 0 |
+| [`NRS3Cristales/Diagonal.lean`](NRS3Cristales/Diagonal.lean) | `omega_diagonal` | Égalité des crochets en x et y sur la diagonale du carré | 0 |
+| [`NRS3Cristales/Palabras.lean`](NRS3Cristales/Palabras.lean) | `commute_iff_forall_commutator` | Commuter équivaut à un commutateur d’espérance nulle | 0 |
+| [`NRS3Cristales/PalabrasCubo.lean`](NRS3Cristales/PalabrasCubo.lean) | `bracket_eq_zero_iff_ejes_distintos` | Deux observables du cube commutent ⟺ axes distincts | 0 |
+| [`NRS3Cristales/Schur.lean`](NRS3Cristales/Schur.lean) | `schur_bipartita` | Complément de Schur bipartite et mots de deux/trois pas d’axe | 0 |
+| [`NRS3Cristales/SchurCubo.lean`](NRS3Cristales/SchurCubo.lean) | `tension_parteFCC_eq_zero` | Tension nulle de la partie fcc de l’état de courant maximal | 0 |
+| [`NRS3Cristales/FccRefinado.lean`](NRS3Cristales/FccRefinado.lean) | `banda_fcc_refinada` | Bande fcc raffinée égale au carré de la bande cubique | 0 |
 
-lakefile.toml fixe Physlib au commit `cede8e00` de [naype888-cloud/physlib](https://github.com/naype888-cloud/physlib/tree/cristales-435) (Lean 4.35). Tous les résultats ne dépendent que de :
+### Portée
 
-```text
-[propext, Classical.choice, Quot.sound]
-```
+* Les lemmes d’inversion, petit groupe et vitesse de groupe proviennent de la branche `cristales-435` du fork `naype888-cloud/physlib` (`cede8e00`) ; les groupes ponctuels, Robertson et `axisStep` sont fusionnés dans `leanprover-community/physlib`.
 
-* **0 `sorry`**, aucun axiome propre.
+---
+
+## 🏛️ La mosaïque
+
+| Dépôt | Objet |
+|:---|:---|
+| [`00 · bacqm-substrate`](https://github.com/naype888-cloud/bacqm-systems) | Substrat matériel & moteur du noyau Linux : modules de mémoire dynamiques en temps réel |
+| [`01 · nava-robertson-schrodinger`](https://github.com/naype888-cloud/nava-robertson-schrodinger) | Le canon : l'incertitude élémentaire dimensionnelle sur le cube ouvert, ℂᵈ ⊗ ℂᵈ ⊗ ℂᵈ |
+| [`02 · Proper-Time-General-Relativity`](https://github.com/naype888-cloud/Proper-Time-General-Relativity) | Le temps compte les pas : τ = 1/(φ|t|) à quatre sites ; masse effective, équivalence, gravitation |
+| [`03 · nrs3-mandelstam-tamm-cramer-rao`](https://github.com/naype888-cloud/nrs3-mandelstam-tamm-cramer-rao) | Mandelstam–Tamm et Cramér–Rao : aucun état n'est orthogonal à lui-même avant πħ/(2ΔE) |
+| [`04 · YM-By-Perelmans-surgery-method`](https://github.com/naype888-cloud/YM-By-Perelmans-surgery-method) | Yang–Mills sur réseau : loi d'aire uniforme, matrice de transfert, défaut de fibre (0 sorry) |
+| [`05 · nrs3-tightbinding`](https://github.com/naype888-cloud/nrs3-tightbinding) | La chaîne de Physlib, le cube ouvert et la table périodique (H–Og), un cube 3D par élément |
+| [**06 · nrs3-cristales**](https://github.com/naype888-cloud/nrs3-cristales) | Cristaux : la symétrie donne la forme de Σ et Ω, le spectre donne la taille *(ce dépôt)* |
+| [`07 · nrs3-completude`](https://github.com/naype888-cloud/nrs3-completude) | Complétude constructive et limites spectrales par Robertson–Fiedler–Niven–Szegő |
+| [`08 · nrs3-golab`](https://github.com/naype888-cloud/nrs3-golab) | Gołąb, les deux extrêmes : π = 3 (hexagone), 4 (carré) ; produit scalaire → π exact ; stabilité en d = 3 |
+| [`09 · nrs3-de-sitter`](https://github.com/naype888-cloud/nrs3-de-sitter) | Cosmologie de Sitter : rayon d'horizon L_dS, constante cosmologique positive et courbure |
+| [`10 · nrs3-bekenstein`](https://github.com/naype888-cloud/nrs3-bekenstein) | Thermodynamique des trous noirs : frontière à bits, entropie de Bekenstein–Hawking saturée |
+| [`11 · nrs3-landauer-carnot`](https://github.com/naype888-cloud/nrs3-landauer-carnot) | Limite de Landauer et cycle de Carnot : coût d'effacement d'un bit et dissipation minimale |
+| [`12 · nrs3-penrose`](https://github.com/naype888-cloud/nrs3-penrose) | Effondrement gravitationnel de Diósi–Penrose : temps de décohérence par auto-énergie |
+| [`13 · nrs3-rovelli-lqg`](https://github.com/naype888-cloud/nrs3-rovelli-lqg) | Gravité quantique à boucles : spectre d'aire discrète, opérateur de surface et saturation de spin |
+| [`14 · nrs3-uncertainty-cone`](https://github.com/naype888-cloud/nrs3-uncertainty-cone) | Cône de lumière futur et cercle de Minkowski : structure causale sous revêtement SL(2, ℂ) |
+| [`15 · lean4-commits`](https://github.com/naype888-cloud/lean4-commits) | 53 PRs fusionnées dans leanprover-community/physlib : catalogue de preuves formelles, 0 sorry, ZFC |
 
 ---
 
@@ -203,27 +227,24 @@ lakefile.toml fixe Physlib au commit `cede8e00` de [naype888-cloud/physlib](http
 | **1936** | Bouckaert, Smoluchowski et Wigner : le petit groupe de chaque k | `covariance_hopping_position_littleGroup` |
 
 **Antécédents et outils hors de la fenêtre.** Bravais (1848), Cayley (1878), Følner (1955), Lean 4, Mathlib et Physlib.
-
 ---
 
-## 🏛️ La mosaïque des dépôts
+## 🛠️ Compilation et certification
 
-| Dépôt | Objet |
-|:---|:---|
-| [nava-robertson-schrodinger](https://github.com/naype888-cloud/nava-robertson-schrodinger) | RS^N et RS^N³ — le théorème de base |
-| [nrs3-tightbinding](https://github.com/naype888-cloud/nrs3-tightbinding) | La chaîne de liaisons fortes, le cube ouvert et la table périodique |
-| [nrs3-mandelstam-tamm-cramer-rao](https://github.com/naype888-cloud/nrs3-mandelstam-tamm-cramer-rao) | Mandelstam–Tamm et Cramér–Rao |
-| [nrs3-landauer-carnot](https://github.com/naype888-cloud/nrs3-landauer-carnot) | Landauer et Carnot |
-| [nrs3-de-sitter](https://github.com/naype888-cloud/nrs3-de-sitter) | de Sitter |
-| [nrs3-penrose](https://github.com/naype888-cloud/nrs3-penrose) | Penrose (proposition) |
-| [nrs3-pauli-dirac](https://github.com/naype888-cloud/nrs3-pauli-dirac) | Pauli–Dirac |
-| [nrs3-uncertainty-cone](https://github.com/naype888-cloud/nrs3-uncertainty-cone) | Le cône de l’incertitude |
-| [nrs3-poincare](https://github.com/naype888-cloud/nrs3-poincare) | Poincaré |
-| [nrs3-defect-curvature](https://github.com/naype888-cloud/nrs3-defect-curvature) | Défaut et courbure |
-| [nrs3-rovelli-lqg](https://github.com/naype888-cloud/nrs3-rovelli-lqg) | Rovelli — Loop Quantum Gravity (proposition) |
-| [nrs3-dark](https://github.com/naype888-cloud/nrs3-dark) | Dark |
-| **[nrs3-cristales](https://github.com/naype888-cloud/nrs3-cristales)** | Cristaux (ce dépôt) |
+```bash
+lake build
+lake env lean Verification/Axioms.lean
+node tools/check_core.js          # le modèle numérique du site contre les formules des lemmes
+node tools/gen_formal_tables.js   # régénère les tables de la note formelle depuis le même noyau
+```
 
+lakefile.toml fixe Physlib au commit `cede8e00` de [naype888-cloud/physlib](https://github.com/naype888-cloud/physlib/tree/cristales-435) (Lean 4.35). Tous les résultats ne dépendent que de :
+
+```text
+[propext, Classical.choice, Quot.sound]
+```
+
+* **0 `sorry`**, aucun axiome propre.
 ---
 
 ## 📜 Licence
@@ -237,5 +258,7 @@ NRS Noncommercial License 1.0.0, voir [LICENSE](LICENSE). Auteur : Eduardo Nava-
 ### 📐 *« La symétrie donne la forme de Σ et Ω, le spectre donne la taille, et le seul mouvement élémentaire, le pas d’axe, engendre fcc et bcc. »*
 
 **Eduardo Nava Hernández** · [naype888-cloud](https://github.com/naype888-cloud)
+
+</div>
 
 </div>
