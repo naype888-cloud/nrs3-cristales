@@ -2,7 +2,8 @@
 
 <div align="center">
 
-# RS<sup>N</sup>³ · Cristaux
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/oscuro/titre_cristales.png"><img src="assets/claro/titre_cristales.png" alt="RS^N³ · Cristaux" width="860"></picture>
+**"RS<sup>N</sup>³ · Cristaux"**
 ### La symétrie donne la forme de Σ et Ω ; le spectre donne la taille ; le pas d’axe engendre fcc et bcc
 
 **Eduardo Nava Hernández**  
